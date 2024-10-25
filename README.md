@@ -34,6 +34,7 @@ Scandinavian Yatzy is a dice game where the player rolls five dice up to three t
     - **Full house**: Any set of three combined with a different pair (e.g. 5-5-5 + 6-6) Scores sum of all the dice.
     - **Chance**: Sum of all dice.
     - **Yatzy**: Five of a kind. Scores 50.
+      
 **Bonuses**:
   - A bonus of 50 points is awarded if a player scores at least 63 in the upper section.
   
