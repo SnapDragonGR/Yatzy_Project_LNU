@@ -27,6 +27,7 @@ Scandinavian Yatzy is a dice game where the player rolls five dice up to three t
 **Scoring**:
 - Upper section scores are the sum of the specified die values.
 - Lower section scores vary based on combinations:
+  
     - **One/Two Pairs**: Sum of two highest / two different pairs of matching dice
     - **Three/Four of a Kind**: Sum of all dice if at least three/four dice are the same.
     - **Small Straight**: 1-2-3-4-5 sequence. Scores 15 points.
@@ -35,7 +36,7 @@ Scandinavian Yatzy is a dice game where the player rolls five dice up to three t
     - **Chance**: Sum of all dice.
     - **Yatzy**: Five of a kind. Scores 50.
       
-**Bonuses**:
+- **Bonuses**:
   - A bonus of 50 points is awarded if a player scores at least 63 in the upper section.
   
 **Max score is 374**:
