@@ -53,7 +53,7 @@ Scandinavian Yatzy is a dice game where the player rolls five dice up to three t
   - **20 on the _Large Straight_** 
   - **28 on the _Full House_** 
   - **30 on the _Chance_** 
-  - **and 50 on the _Yatzy_**)
+  - **and 50 on the _Yatzy_**
 ## How to Run
 (to be continued)
 ## Game instructions
