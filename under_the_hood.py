@@ -45,3 +45,27 @@ def print_rolls(roll_list, game_mode_num):
         for i in range(1, game_mode_num): 
             print("gbiyasmlkb")
 
+
+# sum of scores from the upper section categories + bonus check
+upper_keys = ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes']
+def upper_count():
+    upper_score = sum(score_card[key] for key in score_card if key in upper_keys)
+
+    if upper_score >= 63:
+        upper_score += 50
+
+    return upper_score
+
+# sum of scores from the lower section categories
+def lower_count():
+    lower_score = sum(score_card[key] for key in score_card if key not in upper_keys)
+
+
+def show_scoring_sheet():
+    print('Current score sheet:')
+
+
+def main():
+    while all(value == 0 for value in score_card.values()):   # correct the conditions
+        rolling_dice()
+
