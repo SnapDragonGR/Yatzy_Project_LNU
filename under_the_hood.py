@@ -6,7 +6,7 @@ score_card = {
     'Large Straight': '-', 'Full House': '-', 'Chance': '-', 'Yatzy': '-'
 }
 
-
+#this function works flawlessly
 def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on the game mode chosen, ie chaging the number of times the dice are rolled
     #rolling hte dice
     dice_list = [] # list used to store the values of the rolled dice
@@ -17,34 +17,56 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
     for i in range(0, 2):
         choice_reroll = input("Do you want to reroll(y - yes, n - no):")
 
-        if choice_reroll.lower() != "y" or "n": 
-            print(choice_reroll, "is not a valid choice") #needs to be in a loop to error check
-            choice_reroll = input("Do you want to reroll(y - yes, n - no)")
+        if choice_reroll.lower() != "y" and choice_reroll.lower() !="n":
+            incorrecet_input = True
+
+            while incorrecet_input == True: 
+
+                print(choice_reroll, "is not a valid choice") #need to do better error checking with try and except 
+                choice_reroll = input("Do you want to reroll(y - yes, n - no)")
+
+                if choice_reroll.lower() != "y" and choice_reroll.lower() !="n":
+                    incorrecet_input = True
+                else:
+                    incorrecet_input = False
 
         elif choice_reroll.lower() == "y": 
             choice_all = input("To reroll all dice enter 'a', enter anyother key to reroll a subset of dice :")
 
             if (choice_all.lower() == "a"):
                 for j in range(0, game_mode_num):
-                    dice_list.append(random.randint(1, 6))
+                    dice_list[j] = random.randint(1, 6)
+                    
                 print_rolls(dice_list, game_mode_num)
             
             else:
                 choice_dicenum = input("How many dice do you want to reroll:")
                 choice_dicekey = []
                 print("Which dice do you want to reroll(enter n - where n is the key of the dice displayed below the dice)", end = " ") #error handling for this needs to be one 
-                for k in range(0,choice_dicenum):
+                for k in range(0,int(choice_dicenum)):
                     choice_dicekey.append(int(input()))
                 
                 for key in choice_dicekey: 
                     dice_list[key-1] = random.randint(1, 6)
                 print_rolls(dice_list, game_mode_num)
+    
+    return dice_list
 
 
-def print_rolls(roll_list, game_mode_num):  
+def print_rolls(roll_list, game_mode_num):
+    dice_faces = {
+    1: ["[       ]", "[   0   ]", "[       ]"],
+    2: ["[ 0     ]", "[       ]", "[     0 ]"],
+    3: ["[ 0     ]", "[   0   ]", "[     0 ]"],
+    4: ["[ 0   0 ]", "[       ]", "[ 0   0 ]"],
+    5: ["[ 0   0 ]", "[   0   ]", "[ 0   0 ]"],
+    6: ["[ 0   0 ]", "[ 0   0 ]", "[ 0   0 ]"]
+    }  
     for row in range(3):            
-        for i in range(1, game_mode_num): 
-            print("gbiyasmlkb")
+        for i in range(1, game_mode_num+1): 
+            print(dice_faces[roll_list[i-1]][row], end = " ")
+        print()
+
 
 
 # Give user possible categories based on what they have in their roll (if elifing at its max)
@@ -57,6 +79,8 @@ def possible_categories(dice):
 
 # count single digit score if a player decides to go for this option (make em choose the num to go for). Also, gotta have a global variable "dice" to have access to
 # the values of a roll and to be able to work with it
+
+#the rolling dice function returns dice_list a list of all the values of the dice, so in the main file we need to make a global value that takes its output
 def single_digits(dice, num):
     score = 0
     for i in dice:
@@ -139,7 +163,9 @@ def show_scoring_sheet():
 
 
 def main():
-    while any(isinstance(value, str) for value in score_card.values()):
+    while any(isinstance(value, str) for value in score_card.values()): #also this function i think needs to be in main.py so this main is limited to only the back end functions
         print('Rolling dice...')
-        rolling_dice(5)
+        rolling_dice(5) #5 need to be a variable so we can easily integrate multiplayer
+
+
 
