@@ -43,8 +43,9 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
                 choice_dicenum = input("How many dice do you want to reroll:")
                 choice_dicekey = []
                 print("Which dice do you want to reroll(enter n - where n is the key of the dice displayed below the dice)", end = " ") #error handling for this needs to be one 
+                
                 for k in range(0,int(choice_dicenum)):
-                    choice_dicekey.append(int(input()))
+                    choice_dicekey.append(int(input())) #make this take a string seperated by , so we can 
                 
                 for key in choice_dicekey: 
                     dice_list[key-1] = random.randint(1, 6)
@@ -66,9 +67,10 @@ def print_rolls(roll_list, game_mode_num):
         for i in range(1, game_mode_num+1): 
             print(dice_faces[roll_list[i-1]][row], end = " ")
         print()
-
-
-
+    for a in range(1,game_mode_num + 1):
+        print(f"{a:^10}", end = "")
+    print()
+    
 # Give user possible categories based on what they have in their roll (if elifing at its max)
 def possible_categories(dice):
     for num in dice:
@@ -100,6 +102,16 @@ def single_digits(dice, num):
         key = key_mapping[num]
         score_card[key] = score
 
+def two_of_a_kind(dice):
+    score = 0
+    for num in dice:
+        if dice.count(num) >= 2:
+            score = num *2
+            break
+
+        score_card["Two Pairs"] = score
+
+
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 def three_of_a_kind(dice):
     score = 0
@@ -123,10 +135,23 @@ def four_of_a_kind(dice):
 
 
 def small_straight(dice):
-    pass
+    score = 0 
+    required_sequence = {1, 2, 3, 4, 5}
+
+    if required_sequence.issubset(dice):
+        score = 15
+    
+    score_card["Small Straight"] = score
+             
 
 def large_straight(dice):
-    pass
+    score = 0 
+    required_sequence = {2, 3, 4, 5, 6}
+
+    if required_sequence.issubset(dice):
+        score = 20
+    
+    score_card["Small Straight"] = score
 
 
 def full_house(dice):
