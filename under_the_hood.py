@@ -1,7 +1,7 @@
 import random
 
-class Dumb_Ass_Error: 
-    "You forgot to error check or something dumbass, fix it"
+class Dumb_Ass_Error:
+    """You forgot to error check or something dumbass, fix it"""
     pass
 
 #for it to work with maxi yatzi we would need a seperate score card
@@ -13,50 +13,53 @@ score_card = {
 }
 
 #this function works flawlessly
-def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on the game mode chosen, ie chaging the number of times the dice are rolled
-    #rolling hte dice
-    dice_list = [] # list used to store the values of the rolled dice
+def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on the game mode chosen, ie changing the number of times the dice are rolled
+    dice_list = []    # list used to store the values of the rolled dice
+
     for i in range(0, game_mode_num): # i is the index of the list
         dice_list.append(random.randint(1, 6))
     print_rolls(dice_list, game_mode_num)
-    #re-rolling the dice
-    for i in range(0, 2):
-        choice_reroll = input("Do you want to reroll(y - yes, n - no):")
 
-        if choice_reroll.lower() != "y" and choice_reroll.lower() !="n":
-            incorrecet_input = True
+    # re-rolling the dice up to 2 re-rolls
+    for _ in range(2):
+        while True:
+            choice_reroll = input("Do you want to re-roll (y - yes, n - no): ").lower().strip()
+            if choice_reroll in ('y', 'yes', 'n', 'no'):
+                break
+            print(f"'{choice_reroll}' is not a valid choice. Please enter 'y' or 'n'.")
 
-            while incorrecet_input == True: 
 
-                print(choice_reroll, "is not a valid choice") #need to do better error checking with try and except 
-                choice_reroll = input("Do you want to reroll(y - yes, n - no)")
+        if choice_reroll == "y":
+            while True:
+                choice_all = input("To re-roll all dice enter 'a', or specify dice positions separated by commas (e.g. 1,3,5): ").lower().strip()
 
-                if choice_reroll.lower() != "y" and choice_reroll.lower() !="n":
-                    incorrecet_input = True
+                # Re-roll all dice
+                if choice_all in ("a", "all"):
+                    for j in range(game_mode_num):
+                        dice_list[j] = random.randint(1, 6)
+                    print_rolls(dice_list, game_mode_num)
+                    break
+
                 else:
-                    incorrecet_input = False
+                    # Process the input for specific dice to re-roll
+                    choice_dicekey = choice_all.split(",")
 
-        elif choice_reroll.lower() == "y": 
-            choice_all = input("To reroll all dice enter 'a', enter anyother key to reroll a subset of dice :")
+                    # Validate that all entries are valid numbers in the range
+                    if all(key.strip().isdigit() and 1 <= int(key.strip()) <= game_mode_num for key in choice_dicekey):
+                        choice_dicekey = [int(key.strip()) for key in choice_dicekey]
 
-            if (choice_all.lower() == "a"):
-                for j in range(0, game_mode_num):
-                    dice_list[j] = random.randint(1, 6)
-                    
-                print_rolls(dice_list, game_mode_num)
-            
-            else:
-                choice_dicenum = input("How many dice do you want to reroll:")
-                choice_dicekey = []
-                print("Which dice do you want to reroll(enter n - where n is the key of the dice displayed below the dice)", end = " ") #error handling for this needs to be one 
-                
-                for k in range(0,int(choice_dicenum)):
-                    choice_dicekey.append(int(input())) #make this take a string seperated by , so we can 
-                
-                for key in choice_dicekey: 
-                    dice_list[key-1] = random.randint(1, 6)
-                print_rolls(dice_list, game_mode_num)
-    
+                        # Re-roll the chosen dice
+                        for key in choice_dicekey:
+                            dice_list[key - 1] = random.randint(1, 6)
+                        print_rolls(dice_list, game_mode_num)
+                        break
+
+                    else:
+                        print(f"Please enter positions between 1 and {game_mode_num} only, separated by commas (e.g. 1,3,5).")
+        else:
+            break # fix this part, do smth when user presses 'n'
+
+
     return dice_list
 
 
@@ -120,6 +123,8 @@ def two_of_a_kind(dice):
 
         score_card["Two Pairs"] = score
 
+    return score
+
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 def three_of_a_kind(dice):
@@ -165,6 +170,7 @@ def large_straight(dice):
 #combination of 3 of a kind and a pair of two
 def full_house(dice): 
     unique_value = set(dice)
+    score = 0
 
     if len(unique_value) == 2: # underlying logic works for maxi yazi however this if statement does not
         first, second = unique_value
@@ -193,6 +199,8 @@ def yatzy(dice, game_mode_number):
         else: 
             raise Dumb_Ass_Error
 
+    return score
+
 # sum of scores from the upper section categories + bonus check
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
 def upper_count():
@@ -206,6 +214,8 @@ def upper_count():
 # sum of scores from the lower section categories
 def lower_count():
     lower_score = sum(score_card[key] for key in score_card if key not in upper_keys)
+
+    return lower_score
 
 
 def show_scoring_sheet():
