@@ -1,5 +1,11 @@
 import random
 
+class Dumb_Ass_Error: 
+    "You forgot to error check or something dumbass, fix it"
+    pass
+
+#for it to work with maxi yatzi we would need a seperate score card
+# therefore logic needs to be added to check which kind of game is being played
 score_card = {
     'Ones': '-', 'Twos': '-', 'Threes': '-', 'Fours': '-', 'Fives': '-', 'Sixes': '-',
     'One Pair': '-', 'Two Pairs': '-', 'Three of a Kind': '-', 'Four of a Kind': '-', 'Small Straight': '-',
@@ -133,7 +139,7 @@ def four_of_a_kind(dice):
 
     score_card['Four of a Kind'] = score
 
-
+#def five_of_a_kind(dice):
 def small_straight(dice):
     score = 0 
     required_sequence = {1, 2, 3, 4, 5}
@@ -153,18 +159,36 @@ def large_straight(dice):
     
     score_card["Small Straight"] = score
 
+#combination of 3 of a kind and a pair of two
+def full_house(dice): 
+    unique_value = set(dice)
 
-def full_house(dice):
-    pass
+    if len(unique_value) == 2: # underlying logic works for maxi yazi however this if statement does not
+        first, second = unique_value
+        if dice.count(first) == 3 and dice.count(second) == 2:
+            score = (first * 3) + (second * 2)
+        elif dice.count(second) == 3 and dice.count(first) == 2:
+            score = (first * 2) + (second * 3)
+    
+    score_card['Full House'] = score
 
-
+#any combination of dice
 def chance(dice):
-    pass
+    score = 0
+    for num in dice:
+        score += num
+    score_card['Chance'] = score
 
-
-def yatzy(dice):
-    pass
-
+#yeatzy 5 of a kind
+def yatzy(dice, game_mode_number):
+    score = 0
+    if dice.count(dice[0]) == game_mode_number :
+        if game_mode_number == 5:
+            score = 50
+        elif game_mode_number == 6:
+            score = 100
+        else: 
+            raise Dumb_Ass_Error
 
 # sum of scores from the upper section categories + bonus check
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
