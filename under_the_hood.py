@@ -62,21 +62,24 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
 
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
-    1: ["[       ]", "[   0   ]", "[       ]"],
-    2: ["[ 0     ]", "[       ]", "[     0 ]"],
-    3: ["[ 0     ]", "[   0   ]", "[     0 ]"],
-    4: ["[ 0   0 ]", "[       ]", "[ 0   0 ]"],
-    5: ["[ 0   0 ]", "[   0   ]", "[ 0   0 ]"],
-    6: ["[ 0   0 ]", "[ 0   0 ]", "[ 0   0 ]"]
-    }  
-    for row in range(3):            
-        for i in range(1, game_mode_num+1): 
-            print(dice_faces[roll_list[i-1]][row], end = " ")
+        1: ["[       ]", "[   ○   ]", "[       ]"],
+        2: ["[ ○     ]", "[       ]", "[     ○ ]"],
+        3: ["[ ○     ]", "[   ○   ]", "[     ○ ]"],
+        4: ["[ ○   ○ ]", "[       ]", "[ ○   ○ ]"],
+        5: ["[ ○   ○ ]", "[   ○   ]", "[ ○   ○ ]"],
+        6: ["[ ○   ○ ]", "[ ○   ○ ]", "[ ○   ○ ]"]
+    }
+
+    for row in range(3):
+        for i in range(1, game_mode_num + 1):
+            print(dice_faces[roll_list[i - 1]][row], end=" ")
         print()
-    for a in range(1,game_mode_num + 1):
-        print(f"{a:^10}", end = "")
+    print('-------------------------------------------------')
+    for a in range(1, game_mode_num + 1):
+        print(f"{a:^10}", end="")
     print()
-    
+
+
 # Give user possible categories based on what they have in their roll (if elifing at its max)
 def possible_categories(dice):
     for num in dice:
