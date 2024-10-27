@@ -24,13 +24,13 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
     # re-rolling the dice up to 2 re-rolls
     for _ in range(2):
         while True:
-            choice_reroll = input("Do you want to re-roll (y - yes, n - no): ").lower().strip()
+            choice_reroll = input("Do you want to re-roll (y - yes, n - no): ").lower().strip()#right i forgot strip the spaces good catch
             if choice_reroll in ('y', 'yes', 'n', 'no'):
                 break
             print(f"'{choice_reroll}' is not a valid choice. Please enter 'y' or 'n'.")
 
 
-        if choice_reroll == "y":
+        if choice_reroll in ("y", "yes"):
             while True:
                 choice_all = input("To re-roll all dice enter 'a', or specify dice positions separated by commas (e.g. 1,3,5): ").lower().strip()
 
@@ -58,9 +58,8 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
                     else:
                         print(f"Please enter positions between 1 and {game_mode_num} only, separated by commas (e.g. 1,3,5).")
         else:
-            break # fix this part, do smth when user presses 'n'
-
-
+            return dice_list
+            
     return dice_list
 
 def print_rolls(roll_list, game_mode_num):
@@ -84,6 +83,9 @@ def print_rolls(roll_list, game_mode_num):
 
 
 # in essence this shouldn't be that hard but my brain is already frying so Im gon keep working on that tmr haha
+
+# i think the logic can be simplified by just calling function and if they return 0 it is not possible 
+#can you make it so it returns a list with all the keys of the ones that are possible
 def possible_categories(dice):
     print("Possible categories for this roll:")
     if two_of_a_kind(dice):
@@ -116,15 +118,27 @@ def single_digits(dice, num):
         score_card[key] = score
         return score
 
-
-def two_of_a_kind(dice):
+def one_pair(dice):
     score = 0
-    for num in dice:
+    unique_dice = set(dice)
+    sort_dice = sorted(unique_dice, reverse = True)
+    print(sort_dice)
+    for num in sort_dice:
         if dice.count(num) >= 2:
             score = num *2
             break
+    score_card['One Pair'] = score
     return score
 
+def two_pair(dice): # this is wrong for maxi yatzi
+    score = 0
+    unique_dice = set(dice)
+    for num in unique_dice:
+        if dice.count(num) >= 2:
+            score += num *2
+            print(score)
+    score_card["Two Pairs"] = score
+    return score
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 def three_of_a_kind(dice):
@@ -226,5 +240,73 @@ def lower_count():
 
 def show_scoring_sheet():
     print('Current score sheet:')
+    index = 1
     for key, value in score_card.items():
-        print(f'{key}: {value}')
+        print(f'{index}: {key}: {value}') # for now this is fine, final build i wanna make it actually look like the physical scoring card
+        index += 1
+
+def scorecard_update(user_scorecard_choice, dice_list, game_mode_number): #the possibility function needs to be called here to recheck that the user can actually put their roll there
+    possible_list = possible_categories(dice_list)
+    single_cases = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives','Sixes']
+    match user_scorecard_choice:
+        case 1 | 2 | 3 | 4 | 5 | 6:
+            if single_cases.issubset(possible_list):
+                single_digits(dice_list, user_scorecard_choice)
+            else:
+                print(f"The selected choice is not a valid option, please sleect a valid option")
+        case 7:
+            if 'One Pair' in possible_list:
+                one_pair(dice_list)
+            else:
+                print(f"'One Pair' is not a valid choice")
+
+        case 8:
+            if 'Two Pairs' in possible_list:
+                two_pair(dice_list)
+            else:
+                print(f"'Two Pairs' is not a valid choice")
+            
+        case 9:
+            if 'Three of a Kind' in possible_list:
+                three_of_a_kind(dice_list)
+            else:
+                print(f"'Three of a Kind' is not a valid choice")
+            
+        case 10:
+            if 'Four of a Kind' in possible_list:
+                four_of_a_kind(dice_list)
+            else:
+                print(f"'Four of a Kind' is not a valid choice")
+            
+        case 11:
+            if 'Small Straight' in possible_list:
+                small_straight(dice_list)
+            else:
+                print(f"'Small Straight' is not a valid choice")
+            
+        case 12:
+            if 'Large Straight' in possible_list:
+                large_straight(dice_list)
+            else:
+                print(f"'Large Straight' is not a valid choice")
+            
+        case 13:
+            if 'Full House' in possible_list:
+                full_house(dice_list)
+            else:
+                print(f"'Full House' is not a valid choice")
+            
+        case 14:
+            if 'Chance' in possible_list:
+                chance(dice_list)
+            else:
+                print(f"'Chance' is not a valid choice")
+            
+        case 15:
+            if 'Yatzy' in possible_list:
+                yatzy(dice_list, game_mode_number)
+            else:
+                print(f"'Yatzy' is not a valid choice")
+            
+
+        
