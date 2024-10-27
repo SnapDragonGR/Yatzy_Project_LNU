@@ -12,6 +12,7 @@ score_card = {
     'Large Straight': '-', 'Full House': '-', 'Chance': '-', 'Yatzy': '-'
 }
 
+
 #this function works flawlessly
 def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on the game mode chosen, ie changing the number of times the dice are rolled
     dice_list = []    # list used to store the values of the rolled dice
@@ -81,17 +82,13 @@ def print_rolls(roll_list, game_mode_num):
         print(f"{a:^10}", end="")
     print()
 
-roll = rolling_dice(5)
 
-# Give user possible categories based on what they have in their roll (if elifing at its max)
+# in essence this shouldn't be that hard but my brain is already frying so Im gon keep working on that tmr haha
 def possible_categories(dice):
     print("Possible categories for this roll:")
     if two_of_a_kind(dice):
-        score_card['Two of A Kind'] = two_of_a_kind(roll)
+        score_card['Two of A Kind'] = two_of_a_kind(dice)
         print("1. Two of a Kind")
-
-
-
 
 # Start of counting functions (gon count the scores and update them in the score card)
 
@@ -231,12 +228,3 @@ def show_scoring_sheet():
     print('Current score sheet:')
     for key, value in score_card.items():
         print(f'{key}: {value}')
-
-
-def main():
-    while any(isinstance(value, str) for value in score_card.values()): #also this function i think needs to be in main.py so this main is limited to only the back end functions
-        print('Rolling dice...')
-        rolling_dice(5) #5 need to be a variable so we can easily integrate multiplayer
-
-
-
