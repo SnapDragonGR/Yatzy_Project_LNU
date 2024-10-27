@@ -62,7 +62,6 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
 
     return dice_list
 
-
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
         1: ["[       ]", "[   ○   ]", "[       ]"],
@@ -82,11 +81,16 @@ def print_rolls(roll_list, game_mode_num):
         print(f"{a:^10}", end="")
     print()
 
+roll = rolling_dice(5)
 
 # Give user possible categories based on what they have in their roll (if elifing at its max)
 def possible_categories(dice):
-    for num in dice:
-        pass
+    print("Possible categories for this roll:")
+    if two_of_a_kind(dice):
+        score_card['Two of A Kind'] = two_of_a_kind(roll)
+        print("1. Two of a Kind")
+
+
 
 
 # Start of counting functions (gon count the scores and update them in the score card)
@@ -113,6 +117,8 @@ def single_digits(dice, num):
     if num in key_mapping:
         key = key_mapping[num]
         score_card[key] = score
+        return score
+
 
 def two_of_a_kind(dice):
     score = 0
@@ -120,9 +126,6 @@ def two_of_a_kind(dice):
         if dice.count(num) >= 2:
             score = num *2
             break
-
-        score_card["Two Pairs"] = score
-
     return score
 
 
@@ -135,6 +138,7 @@ def three_of_a_kind(dice):
             break
 
     score_card['Three of a Kind'] = score
+    return score
 
 
 # same as above but for 4 appearances
@@ -146,6 +150,7 @@ def four_of_a_kind(dice):
             break
 
     score_card['Four of a Kind'] = score
+    return score
 
 #def five_of_a_kind(dice):
 def small_straight(dice):
@@ -156,6 +161,7 @@ def small_straight(dice):
         score = 15
     
     score_card["Small Straight"] = score
+    return score
              
 
 def large_straight(dice):
@@ -166,6 +172,7 @@ def large_straight(dice):
         score = 20
     
     score_card["Small Straight"] = score
+    return score
 
 #combination of 3 of a kind and a pair of two
 def full_house(dice): 
@@ -180,6 +187,7 @@ def full_house(dice):
             score = (first * 2) + (second * 3)
     
     score_card['Full House'] = score
+    return score
 
 #any combination of dice
 def chance(dice):
@@ -187,6 +195,7 @@ def chance(dice):
     for num in dice:
         score += num
     score_card['Chance'] = score
+    return score
 
 #yeatzy 5 of a kind
 def yatzy(dice, game_mode_number):
