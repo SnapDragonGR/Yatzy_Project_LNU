@@ -114,10 +114,10 @@ def single_digits(dice, num):
 def one_pair(dice):
     score = 0
     unique_dice = set(dice)
-    sort_dice = sorted(unique_dice, reverse = True)
+    sort_dice = sorted(unique_dice, reverse=True)
     for num in sort_dice:
         if dice.count(num) >= 2:
-            score = num *2
+            score = num * 2
             break
 
     return score
@@ -125,9 +125,15 @@ def one_pair(dice):
 def two_pairs(dice): # this is wrong for maxi yatzi
     score = 0
     unique_dice = set(dice)
-    for num in unique_dice:
+    sort_dice = sorted(unique_dice, reverse=True)
+    pairs = 0
+
+    for num in sort_dice:
         if dice.count(num) >= 2:
-            score += num *2
+            score += num * 2
+            pairs += 1
+            if pairs == 2:
+                break
 
     return score
 
@@ -173,7 +179,7 @@ def large_straight(dice):
     return score
 
 #combination of 3 of a kind and a pair of two
-def full_house(dice): 
+def full_house(dice):
     unique_value = set(dice)
     score = 0
 
@@ -263,27 +269,30 @@ def possible_categories(dice):
 
     # Error handling with user input
     print()
-    choice = input("Choose a category by number, or type 'x' to cross out a category: ")
+    while True:
+        choice = input("Choose a category by number, or type 'x' to cross out a category: ")
 
-    while not ((choice.isdigit() or choice == 'x') and 1 <= int(choice) <= len(possibilities)):
-        print("Invalid input. Please enter a valid number corresponding to a category.")
-        choice = input("Enter the number of the category you want to choose: ")
+        if choice == 'x':
+            choice = input("Which category would you like to cross out (name of it)? ").lower().strip()
 
-    if choice == 'x':
-        choice = input("Which category would you like to cross out (name of it)? ")
+            while choice not in score_card.keys():
+                print("Invalid input. Please enter a valid number corresponding to a category.")
+                choice = input("Enter the number of the category you want to choose: ").lower().strip()
 
-        while choice not in score_card.values():
-            print("Invalid input. Please enter a valid number corresponding to a category.")
-            choice = input("Enter the number of the category you want to choose: ")
+            score_card[choice] = 'x'
+            print(f"Category '{choice}' has been crossed out.")
+            break
 
-        score_card[choice] = 'x'
+        elif choice.isdigit() and 1 <= int(choice) <= len(possibilities):
+            choice = int(choice) - 1
+            selected_category, selected_score = possibilities[choice]
+            score_card[selected_category] = selected_score
 
-    else:
-        choice = int(choice) - 1
-        selected_category, selected_score = possibilities[choice]
-        score_card[selected_category] = selected_score
+            print(f"You selected '{selected_category}' and scored {selected_score}.")
+            break
 
-        print(f"You selected {selected_category} and scored {selected_score}.")
+        else:
+            print("Invalid input. Please enter a valid number corresponding to a category or 'x' to cross out a category.")
 
 
 def show_scoring_sheet():
