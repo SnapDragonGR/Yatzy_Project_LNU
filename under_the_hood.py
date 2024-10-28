@@ -240,14 +240,15 @@ def lower_count():
 
 def show_scoring_sheet():
     print('Current score sheet:')
-    index = 1
+    print(f"|{'Categories':<16s}|{'P1':^5s}|")
+    print("-"* 24)
     for key, value in score_card.items():
-        print(f'{index}: {key}: {value}') # for now this is fine, final build i wanna make it actually look like the physical scoring card
-        index += 1
+        print(f'|{key:<16}|{value:^5}|')
+    print("-"* 24)
 
 def scorecard_update(user_scorecard_choice, dice_list, game_mode_number): #the possibility function needs to be called here to recheck that the user can actually put their roll there
     possible_list = possible_categories(dice_list)
-    single_cases = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives','Sixes']
+    single_cases = {'Ones', 'Twos', 'Threes', 'Fours', 'Fives','Sixes'}
     match user_scorecard_choice:
         case 1 | 2 | 3 | 4 | 5 | 6:
             if single_cases.issubset(possible_list):

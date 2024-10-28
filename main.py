@@ -17,7 +17,7 @@ def main():
 
                 score_sheet_choice = input("Where do you want to enter(please enter the index):") # error check for this 
                 score_sheet_choice = int(score_sheet_choice.strip())
-                under_the_hood.scorecard_update(score_sheet_choice, dice_list, dice_num)
+                under_the_hood.scorecard_update(score_sheet_choice, dice_list, dice_num) 
 
             print("All categories are filled. Game over!")
             final_score = under_the_hood.lower_count() + under_the_hood.upper_count()
