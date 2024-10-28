@@ -84,13 +84,6 @@ def print_rolls(roll_list, game_mode_num):
 
 # in essence this shouldn't be that hard but my brain is already frying so Im gon keep working on that tmr haha
 
-# i think the logic can be simplified by just calling function and if they return 0 it is not possible 
-#can you make it so it returns a list with all the keys of the ones that are possible
-def possible_categories(dice):
-    print("Possible categories for this roll:")
-    if two_of_a_kind(dice):
-        score_card['Two of A Kind'] = two_of_a_kind(dice)
-        print("1. Two of a Kind")
 
 # Start of counting functions (gon count the scores and update them in the score card)
 
@@ -236,6 +229,58 @@ def lower_count():
     lower_score = sum(score_card[key] for key in score_card if key not in upper_keys)
 
     return lower_score
+
+def possible_categories(dice):
+    possibilities = []
+
+    # Calculate potential scores for each category
+    scoring_dict = {
+        'Ones': single_digits(dice, 1),
+        'Twos': single_digits(dice, 2),
+        'Threes': single_digits(dice, 3),
+        'Fours': single_digits(dice, 4),
+        'Fives': single_digits(dice, 5),
+        'Sixes': single_digits(dice, 6),
+        'One Pair': one_pair(dice),
+        'Two Pairs': two_pairs(dice),
+        'Three of a Kind': three_of_a_kind(dice),
+        'Four of a Kind': four_of_a_kind(dice),
+        'Small Straight': small_straight(dice),
+        'Large Straight': large_straight(dice),
+        'Full House': full_house(dice),
+        'Chance': chance(dice),
+        'Yatzy': yatzy(dice, 5)  # fix this to work with a 6 (maxi) as well
+    }
+
+    # Fill in possibilities with categories that have a valid score > 0
+    for name, score in scoring_dict.items():
+        if score_card[name] == '-' and score > 0:  # Check score is valid and category isn't used
+            possibilities.append((name, score))
+
+    # Early exit if no valid categories
+    if not possibilities:
+        print("No valid scoring categories available for this roll.")
+        return None
+
+    # Display possible categories to the user
+    print("Possible categories for this roll:")
+    for index, (name, score) in enumerate(possibilities, 1):
+        print(f"{index}. {name} (score: {score})")
+
+    # Error handling with user input
+    choice = input("Enter the number of the category you want to choose: ")
+
+    while not (choice.isdigit() and 1 <= int(choice) <= len(possibilities)):
+        print("Invalid input. Please enter a valid number corresponding to a category.")
+        choice = input("Enter the number of the category you want to choose: ")
+
+    choice = int(choice) - 1
+    selected_category, selected_score = possibilities[choice]
+
+    score_card[selected_category] = selected_score
+    print(f"You selected {selected_category} and scored {selected_score}.")
+
+    return selected_category
 
 
 def show_scoring_sheet():
