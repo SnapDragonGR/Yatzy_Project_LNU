@@ -108,29 +108,27 @@ def single_digits(dice, num):
 
     if num in key_mapping:
         key = key_mapping[num]
-        score_card[key] = score
+
         return score
 
 def one_pair(dice):
     score = 0
     unique_dice = set(dice)
     sort_dice = sorted(unique_dice, reverse = True)
-    print(sort_dice)
     for num in sort_dice:
         if dice.count(num) >= 2:
             score = num *2
             break
-    score_card['One Pair'] = score
+
     return score
 
-def two_pair(dice): # this is wrong for maxi yatzi
+def two_pairs(dice): # this is wrong for maxi yatzi
     score = 0
     unique_dice = set(dice)
     for num in unique_dice:
         if dice.count(num) >= 2:
             score += num *2
-            print(score)
-    score_card["Two Pairs"] = score
+
     return score
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
@@ -141,7 +139,6 @@ def three_of_a_kind(dice):
             score = num * 3
             break
 
-    score_card['Three of a Kind'] = score
     return score
 
 
@@ -153,7 +150,6 @@ def four_of_a_kind(dice):
             score = num * 4
             break
 
-    score_card['Four of a Kind'] = score
     return score
 
 #def five_of_a_kind(dice):
@@ -163,8 +159,7 @@ def small_straight(dice):
 
     if required_sequence.issubset(dice):
         score = 15
-    
-    score_card["Small Straight"] = score
+
     return score
              
 
@@ -174,8 +169,7 @@ def large_straight(dice):
 
     if required_sequence.issubset(dice):
         score = 20
-    
-    score_card["Small Straight"] = score
+
     return score
 
 #combination of 3 of a kind and a pair of two
@@ -189,8 +183,7 @@ def full_house(dice):
             score = (first * 3) + (second * 2)
         elif dice.count(second) == 3 and dice.count(first) == 2:
             score = (first * 2) + (second * 3)
-    
-    score_card['Full House'] = score
+
     return score
 
 #any combination of dice
@@ -198,7 +191,7 @@ def chance(dice):
     score = 0
     for num in dice:
         score += num
-    score_card['Chance'] = score
+
     return score
 
 #yeatzy 5 of a kind
@@ -308,7 +301,7 @@ def scorecard_update(user_scorecard_choice, dice_list, game_mode_number): #the p
 
         case 8:
             if 'Two Pairs' in possible_list:
-                two_pair(dice_list)
+                two_pairs(dice_list)
             else:
                 print(f"'Two Pairs' is not a valid choice")
             

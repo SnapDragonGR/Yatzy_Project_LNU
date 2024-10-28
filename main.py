@@ -1,6 +1,7 @@
 import under_the_hood
 import time
-# proper main function with error handling and possibilites for further maxi yatzy development
+
+# proper main function with error handling and possibilities for further maxi yatzy development
 def main():
     while True:
         mode = input(
@@ -8,16 +9,13 @@ def main():
 
         if mode == '1':
             dice_num = 5
-            while not all(isinstance(value, int) for value in under_the_hood.score_card.values()):
+            while '-' in under_the_hood.score_card.values():
                 print("Rolling dice...")
                 print()
                 dice_list = under_the_hood.rolling_dice(dice_num)
                 time.sleep(2) #makes it easier to read what the final dice roll is without the program moving forward, should be removed for production
                 under_the_hood.show_scoring_sheet()
-
-                score_sheet_choice = input("Where do you want to enter(please enter the index):") # error check for this 
-                score_sheet_choice = int(score_sheet_choice.strip())
-                under_the_hood.scorecard_update(score_sheet_choice, dice_list, dice_num) 
+                under_the_hood.possible_categories(dice_list)
 
             print("All categories are filled. Game over!")
             final_score = under_the_hood.lower_count() + under_the_hood.upper_count()
