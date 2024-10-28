@@ -256,96 +256,41 @@ def possible_categories(dice):
         return None
 
     # Display possible categories to the user
+    print()
     print("Possible categories for this roll:")
-    for index, (name, score) in enumerate(possibilities, 1):
-        print(f"{index}. {name} (score: {score})")
+    for index, (name, _) in enumerate(possibilities, 1):
+        print(f"{index}. {name}")
 
     # Error handling with user input
-    choice = input("Enter the number of the category you want to choose: ")
+    print()
+    choice = input("Choose a category by number, or type 'x' to cross out a category: ")
 
-    while not (choice.isdigit() and 1 <= int(choice) <= len(possibilities)):
+    while not ((choice.isdigit() or choice == 'x') and 1 <= int(choice) <= len(possibilities)):
         print("Invalid input. Please enter a valid number corresponding to a category.")
         choice = input("Enter the number of the category you want to choose: ")
 
-    choice = int(choice) - 1
-    selected_category, selected_score = possibilities[choice]
+    if choice == 'x':
+        choice = input("Which category would you like to cross out (name of it)? ")
 
-    score_card[selected_category] = selected_score
-    print(f"You selected {selected_category} and scored {selected_score}.")
+        while choice not in score_card.values():
+            print("Invalid input. Please enter a valid number corresponding to a category.")
+            choice = input("Enter the number of the category you want to choose: ")
 
-    return selected_category
+        score_card[choice] = 'x'
+
+    else:
+        choice = int(choice) - 1
+        selected_category, selected_score = possibilities[choice]
+        score_card[selected_category] = selected_score
+
+        print(f"You selected {selected_category} and scored {selected_score}.")
 
 
 def show_scoring_sheet():
+    print()
     print('Current score sheet:')
     print(f"|{'Categories':<16s}|{'P1':^5s}|")
     print("-"* 24)
     for key, value in score_card.items():
         print(f'|{key:<16}|{value:^5}|')
     print("-"* 24)
-
-def scorecard_update(user_scorecard_choice, dice_list, game_mode_number): #the possibility function needs to be called here to recheck that the user can actually put their roll there
-    possible_list = possible_categories(dice_list)
-    single_cases = {'Ones', 'Twos', 'Threes', 'Fours', 'Fives','Sixes'}
-    match user_scorecard_choice:
-        case 1 | 2 | 3 | 4 | 5 | 6:
-            if single_cases.issubset(possible_list):
-                single_digits(dice_list, user_scorecard_choice)
-            else:
-                print(f"The selected choice is not a valid option, please sleect a valid option")
-        case 7:
-            if 'One Pair' in possible_list:
-                one_pair(dice_list)
-            else:
-                print(f"'One Pair' is not a valid choice")
-
-        case 8:
-            if 'Two Pairs' in possible_list:
-                two_pairs(dice_list)
-            else:
-                print(f"'Two Pairs' is not a valid choice")
-            
-        case 9:
-            if 'Three of a Kind' in possible_list:
-                three_of_a_kind(dice_list)
-            else:
-                print(f"'Three of a Kind' is not a valid choice")
-            
-        case 10:
-            if 'Four of a Kind' in possible_list:
-                four_of_a_kind(dice_list)
-            else:
-                print(f"'Four of a Kind' is not a valid choice")
-            
-        case 11:
-            if 'Small Straight' in possible_list:
-                small_straight(dice_list)
-            else:
-                print(f"'Small Straight' is not a valid choice")
-            
-        case 12:
-            if 'Large Straight' in possible_list:
-                large_straight(dice_list)
-            else:
-                print(f"'Large Straight' is not a valid choice")
-            
-        case 13:
-            if 'Full House' in possible_list:
-                full_house(dice_list)
-            else:
-                print(f"'Full House' is not a valid choice")
-            
-        case 14:
-            if 'Chance' in possible_list:
-                chance(dice_list)
-            else:
-                print(f"'Chance' is not a valid choice")
-            
-        case 15:
-            if 'Yatzy' in possible_list:
-                yatzy(dice_list, game_mode_number)
-            else:
-                print(f"'Yatzy' is not a valid choice")
-            
-
-        
