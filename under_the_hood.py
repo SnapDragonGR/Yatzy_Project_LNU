@@ -1,17 +1,13 @@
 import random
 
+def score_card_generate(player_count):
+    score_card = {
+        'Ones': ['-']*player_count , 'Twos': ['-']*player_count, 'Threes': ['-']*player_count, 'Fours': ['-']*player_count, 'Fives': ['-']*player_count, 'Sixes': ['-']*player_count,
+        'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Small Straight': ['-']*player_count,
+        'Large Straight': ['-']*player_count, 'Full House': ['-']*player_count, 'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
+    }
 
-class Dumb_Ass_Error:
-    """You forgot to error check or something dumbass, fix it"""
-    pass
-
-#for it to work with maxi yatzi we would need a seperate score card
-# therefore logic needs to be added to check which kind of game is being played
-score_card = {
-    'Ones': '-', 'Twos': '-', 'Threes': '-', 'Fours': '-', 'Fives': '-', 'Sixes': '-',
-    'One Pair': '-', 'Two Pairs': '-', 'Three of a Kind': '-', 'Four of a Kind': '-', 'Small Straight': '-',
-    'Large Straight': '-', 'Full House': '-', 'Chance': '-', 'Yatzy': '-'
-}
+    return score_card
 
 
 #this function works flawlessly
@@ -82,16 +78,6 @@ def print_rolls(roll_list, game_mode_num):
         print(f"{a:^10}", end="")
     print()
 
-
-# in essence this shouldn't be that hard but my brain is already frying so Im gon keep working on that tmr haha
-
-
-# Start of counting functions (gon count the scores and update them in the score card)
-
-# count single digit score if a player decides to go for this option (make em choose the num to go for). Also, gotta have a global variable "dice" to have access to
-# the values of a roll and to be able to work with it
-
-#the rolling dice function returns dice_list a list of all the values of the dice, so in the main file we need to make a global value that takes its output
 def single_digits(dice, num):
     score = sum(i for i in dice if i == num)
     return score
@@ -111,16 +97,18 @@ def two_pairs(dice): # this is wrong for maxi yatzi
     score = 0
     unique_dice = set(dice)
     sort_dice = sorted(unique_dice, reverse=True)
-    pairs = 0
+    pairs = []
 
     for num in sort_dice:
         if dice.count(num) >= 2:
-            score += num * 2
-            pairs += 1
-            if pairs == 2:
-                break
-
-    return score
+            pairs.append(num*2)
+        
+    if len(pairs) == 2:
+        score = sum(pairs)
+        return score
+    else:
+        return score
+    
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 # noinspection DuplicatedCode
@@ -154,7 +142,6 @@ def small_straight(dice):
 
     return score
              
-
 def large_straight(dice):
     score = 0 
     required_sequence = {2, 3, 4, 5, 6}
@@ -201,7 +188,7 @@ def yatzy(dice, game_mode_number):
 
 # sum of scores from the upper section categories + bonus check
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
-def upper_count():
+def upper_count(score_card):
     upper_score = sum(int(score_card[key]) for key in score_card if key in upper_keys and str(score_card[key]).isdigit())
 
     if upper_score >= 63:
@@ -210,12 +197,12 @@ def upper_count():
     return upper_score
 
 # sum of scores from the lower section categories
-def lower_count():
+def lower_count(score_card):
     lower_score = sum(int(score_card[key]) for key in score_card if key not in upper_keys and str(score_card[key]).isdigit())
 
     return lower_score
 
-def possible_categories(dice):
+def possible_categories(dice, which_player, score_card):
     possibilities = []
 
     # Calculate potential scores for each category
@@ -239,7 +226,7 @@ def possible_categories(dice):
 
     # Fill in possibilities with categories that have a valid score > 0
     for name, score in scoring_dict.items():
-        if score_card[name] == '-' and score > 0:  # Check score is valid and category isn't used
+        if score_card[name][which_player] == '-' and score > 0:  # Check score is valid and category isn't used
             possibilities.append((name, score))
 
     # Early exit if no valid categories
@@ -257,7 +244,7 @@ def possible_categories(dice):
             processed_choice = choice.lower().replace(' ', '')
 
         category_name = processed_score_card[processed_choice]
-        score_card[category_name] = 'x'
+        score_card[category_name][which_player] = 'x'
 
         print()
         print(f"Category '{category_name}' has been crossed out.")
@@ -289,7 +276,7 @@ def possible_categories(dice):
 
 
             category_name = processed_score_card[processed_choice]
-            score_card[category_name] = 'x'
+            score_card[category_name][which_player] = 'x'
 
             print(f"Category '{category_name}' has been crossed out.")
             break
@@ -297,7 +284,7 @@ def possible_categories(dice):
         elif choice.isdigit() and 1 <= int(choice) <= len(possibilities):
             choice = int(choice) - 1
             selected_category, selected_score = possibilities[choice]
-            score_card[selected_category] = selected_score
+            score_card[selected_category][which_player] = selected_score
 
             print(f"You selected '{selected_category}' and scored {selected_score}.")
             break
@@ -306,11 +293,12 @@ def possible_categories(dice):
             print("Invalid input. Please enter a valid number corresponding to a category or 'x' to cross out a category.")
 
 
-def show_scoring_sheet():
+def show_scoring_sheet(player_count, score_card):
     print()
     print('Current score sheet:')
-    print(f"|{'Categories':<16s}|{'P1':^5s}|")
-    print("-"* 24)
-    for key, value in score_card.items():
-        print(f'|{key:<16}|{value:^5}|')
-    print("-"* 24)
+    header = f"|{'Categories':<16s}|"+"".join(f"P{p+1:^5}|" for p in range(player_count))
+    print(header)
+    print("-"* (len(header)-1)) 
+    for key, value in score_card.items(): #this is most certainly also gonna break #suprisingly did not break
+        print(f'|{key:<16}|' +"".join(f"{player_score:^5}|" for player_score in value ))
+    print("-"* (len(header)-1))
