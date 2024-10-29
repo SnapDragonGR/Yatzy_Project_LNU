@@ -13,13 +13,15 @@ def main():
                 print("Rolling dice...")
                 print()
                 dice_list = under_the_hood.rolling_dice(dice_num)
-                time.sleep(2) #makes it easier to read what the final dice roll is without the program moving forward, should be removed for production
+                #time.sleep(2) #makes it easier to read what the final dice roll is without the program moving forward, should be removed for production
                 under_the_hood.show_scoring_sheet()
                 under_the_hood.possible_categories(dice_list)
 
+            under_the_hood.show_scoring_sheet()
             print("All categories are filled. Game over!")
             final_score = under_the_hood.lower_count() + under_the_hood.upper_count()
-            print(f"The final score is:{final_score}")
+            print(f"The final score is: {final_score}")
+            print()
 
         elif mode == '2':
             # further development for Maxi Yatzy

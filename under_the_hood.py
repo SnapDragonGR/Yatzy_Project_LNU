@@ -1,5 +1,6 @@
 import random
 
+
 class Dumb_Ass_Error:
     """You forgot to error check or something dumbass, fix it"""
     pass
@@ -92,24 +93,8 @@ def print_rolls(roll_list, game_mode_num):
 
 #the rolling dice function returns dice_list a list of all the values of the dice, so in the main file we need to make a global value that takes its output
 def single_digits(dice, num):
-    score = 0
-    for i in dice:
-        if i == num:
-            score += num
-
-    key_mapping = {
-        1: 'Ones',
-        2: 'Twos',
-        3: 'Threes',
-        4: 'Fours',
-        5: 'Fives',
-        6: 'Sixes'
-    }
-
-    if num in key_mapping:
-        key = key_mapping[num]
-
-        return score
+    score = sum(i for i in dice if i == num)
+    return score
 
 def one_pair(dice):
     score = 0
@@ -138,6 +123,7 @@ def two_pairs(dice): # this is wrong for maxi yatzi
     return score
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
+# noinspection DuplicatedCode
 def three_of_a_kind(dice):
     score = 0
     for num in dice:
@@ -216,7 +202,7 @@ def yatzy(dice, game_mode_number):
 # sum of scores from the upper section categories + bonus check
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
 def upper_count():
-    upper_score = sum(score_card[key] for key in score_card if key in upper_keys)
+    upper_score = sum(int(score_card[key]) for key in score_card if key in upper_keys and str(score_card[key]).isdigit())
 
     if upper_score >= 63:
         upper_score += 50
@@ -225,7 +211,7 @@ def upper_count():
 
 # sum of scores from the lower section categories
 def lower_count():
-    lower_score = sum(score_card[key] for key in score_card if key not in upper_keys)
+    lower_score = sum(int(score_card[key]) for key in score_card if key not in upper_keys and str(score_card[key]).isdigit())
 
     return lower_score
 
@@ -258,7 +244,24 @@ def possible_categories(dice):
 
     # Early exit if no valid categories
     if not possibilities:
-        print("No valid scoring categories available for this roll.")
+        print("No valid scoring categories available for this roll. You have to cross out a category to continue.")
+        print()
+        choice = input("Which category would you like to cross out (by name)? ").strip()
+        processed_score_card = {key.lower().replace(' ', ''): key for key in score_card}
+
+        processed_choice = choice.lower().replace(' ', '')
+
+        while processed_choice not in processed_score_card:
+            print("Invalid input. Please enter a valid number corresponding to a category.")
+            choice = input("Enter the name of the category you want to choose: ").strip()
+            processed_choice = choice.lower().replace(' ', '')
+
+        category_name = processed_score_card[processed_choice]
+        score_card[category_name] = 'x'
+
+        print()
+        print(f"Category '{category_name}' has been crossed out.")
+
         return None
 
     # Display possible categories to the user
@@ -273,14 +276,22 @@ def possible_categories(dice):
         choice = input("Choose a category by number, or type 'x' to cross out a category: ")
 
         if choice == 'x':
-            choice = input("Which category would you like to cross out (name of it)? ").lower().strip()
+            choice = input("Which category would you like to cross out (by name)? ").strip()
 
-            while choice not in score_card.keys():
+            processed_score_card = {key.lower().replace(' ',''): key for key in score_card}
+
+            processed_choice = choice.lower().replace(' ', '')
+
+            while processed_choice not in processed_score_card:
                 print("Invalid input. Please enter a valid number corresponding to a category.")
-                choice = input("Enter the number of the category you want to choose: ").lower().strip()
+                choice = input("Enter the name of the category you want to choose: ").strip()
+                processed_choice = choice.lower().replace(' ', '')
 
-            score_card[choice] = 'x'
-            print(f"Category '{choice}' has been crossed out.")
+
+            category_name = processed_score_card[processed_choice]
+            score_card[category_name] = 'x'
+
+            print(f"Category '{category_name}' has been crossed out.")
             break
 
         elif choice.isdigit() and 1 <= int(choice) <= len(possibilities):
