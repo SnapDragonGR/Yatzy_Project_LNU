@@ -181,9 +181,6 @@ def yatzy(dice, game_mode_number):
             score = 50
         elif game_mode_number == 6:
             score = 100
-        else: 
-            raise Dumb_Ass_Error
-
     return score
 
 # sum of scores from the upper section categories + bonus check
