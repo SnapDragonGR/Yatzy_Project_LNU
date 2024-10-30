@@ -1,5 +1,6 @@
 import random
 
+
 def score_card_generate(player_count, game_mode_num):
     if game_mode_num == 5:
         score_card = {
@@ -16,8 +17,6 @@ def score_card_generate(player_count, game_mode_num):
         'Small Straight': ['-']*player_count,'Large Straight': ['-']*player_count, 'Full Straight':['-']*player_count,'Full House': ['-']*player_count,'Villa':['-']*player_count, 'Tower':['-']*player_count ,'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
         }
         return score_card
-
-   
 
 
 #this function works flawlessly
@@ -271,21 +270,51 @@ def yatzy(dice, game_mode_number):
 
 # sum of scores from the upper section categories + bonus check
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
-def upper_count(score_card):
-    upper_score = sum(int(score_card[key]) for key in score_card if key in upper_keys and str(score_card[key]).isdigit())
+
+
+def upper_count(score_card, which_player):
+    upper_score = sum(
+        int(score_card[key][which_player])
+        for key in score_card if key in upper_keys and str(score_card[key][which_player]).isdigit()
+    )
 
     if upper_score >= 63:
         upper_score += 50
 
     return upper_score
 
-# sum of scores from the lower section categories
-def lower_count(score_card):
-    lower_score = sum(int(score_card[key]) for key in score_card if key not in upper_keys and str(score_card[key]).isdigit())
+
+def lower_count(score_card, which_player):
+    lower_score = sum(
+        int(score_card[key][which_player])
+        for key in score_card if key not in upper_keys and str(score_card[key][which_player]).isdigit()
+    )
 
     return lower_score
 
-def possible_categories(dice, which_player, score_card, game_mode_type): # this needs to be changed slightly to work with maxi yatzi
+# final score sum for each player
+# check if that works for maxi yatzy
+def final_score(score_card, which_player):
+    for player_index in range(which_player):
+        upper_score = upper_count(score_card, player_index)
+        lower_score = lower_count(score_card, player_index)
+        final_score = upper_score + lower_score
+
+        print(f"Final score for Player {player_index + 1}: {final_score}")
+        print()
+
+
+# function works well, BUT: 1) no error check if player chooses to cross out the same category
+# 2) on the very last option, when the last player has to pick the last option to cross out
+# the program rolls the dice again, even though it's not needed cuz the user already filled in the last category
+# 3) there was smth else but I forgot, smth with multiplayer as well
+# 4) maybe I will rewrite the crossing out mechanics cuz first of all it might be good to have it as a separate func
+# second of all it is so tiring to always manually write the full name (might need to change the score_card printing then)
+def possible_categories(dice, which_player, score_card, game_mode_type):
+    if all(score != '-' for score in [score_card[key][which_player] for key in score_card]):
+        print(f"Player {which_player + 1} has completed all categories and will skip this turn.")
+        return None
+
     possibilities = []
 
     # Calculate potential scores for each category
@@ -305,8 +334,9 @@ def possible_categories(dice, which_player, score_card, game_mode_type): # this 
             'Large Straight': large_straight(dice),
             'Full House': full_house(dice),
             'Chance': chance(dice),
-            'Yatzy': yatzy(dice, 5)  # fix this to work with a 6 (maxi) as well
+            'Yatzy': yatzy(dice, 5)
             }
+
     elif game_mode_type == 6:
         scoring_dict={
             'Ones': single_digits(dice, 1),
