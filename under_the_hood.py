@@ -93,22 +93,44 @@ def one_pair(dice):
 
     return score
 
-def two_pairs(dice): # this is wrong for maxi yatzi
+def two_pairs(dice):
     score = 0
     unique_dice = set(dice)
     sort_dice = sorted(unique_dice, reverse=True)
     pairs = []
 
     for num in sort_dice:
-        if dice.count(num) >= 2:
+        if dice.count(num) >= 4:
+            score = num *4
+            break
+        elif dice.count(num) >= 2:
             pairs.append(num*2)
-        
-    if len(pairs) == 2:
-        score = sum(pairs)
+            if len(pairs) == 2:
+                score = sum(pairs)
+                return score
+    return score
+
+def three_pairs(dice): #only for maxi-yatzy
+    score = 0 
+    unique_dice = set(dice)
+    sort_dice = sorted(unique_dice)
+    pairs = []
+
+    if len(unique_dice) == 1: # if all the dice are the same
+        score = sum(dice)
         return score
     else:
-        return score
-    
+        for num in sort_dice:
+            if dice.count(num) >= 4: #if there are identical pairs append them to the list two times
+                pairs.append(num*2)
+                pairs.append(num*2)
+
+            elif dice.count(num) >= 2:#schecking if there are pairs
+                pairs.append(num*2)
+                if len(pairs) == 3: #if the number of pairs is already 3 return the score
+                    score = sum(pairs)
+                    return score
+    return score
 
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 # noinspection DuplicatedCode
@@ -121,7 +143,6 @@ def three_of_a_kind(dice):
 
     return score
 
-
 # same as above but for 4 appearances
 def four_of_a_kind(dice):
     score = 0
@@ -130,6 +151,14 @@ def four_of_a_kind(dice):
             score = num * 4
             break
 
+    return score
+
+def five_of_a_kind(dice): # for maxi yatzy only
+    score = 0
+    for num in dice:
+        if dice.count(num) >= 5: #if there are 5 or more of the same rolls update the score
+            score = num * 5
+            break
     return score
 
 #def five_of_a_kind(dice):
@@ -151,6 +180,15 @@ def large_straight(dice):
 
     return score
 
+def full_straight(dice): #for maxi yatzy only
+    score = 0
+    required_sequence = {1, 2, 3, 4, 5, 6}
+
+    if required_sequence.issubset(dice):
+        score = 21
+    return score
+
+
 #combination of 3 of a kind and a pair of two
 def full_house(dice):
     unique_value = set(dice)
@@ -165,6 +203,39 @@ def full_house(dice):
 
     return score
 
+def kitchen(dice):
+    pass
+
+def villa(dice):
+    #two there of a kinds
+    score = 0
+    unique_dice = set(dice)
+    triplet= []
+
+    if len(unique_dice) == 1:
+        score = sum(dice)
+        return score
+    else:
+        for num in unique_dice:
+            if dice.count(num) == 3:
+                triplet.append(num * 3)
+                if len(triplet) == 2:
+                    score = sum(triplet)
+                    return score
+    
+    return score
+
+def tower(dice):
+    score = 0
+    unique_dice = set(dice)
+
+    if len(unique_dice) == 1:
+        score = sum()
+
+#debud code
+dice = [3, 3, 4, 4, 5, 5]
+score = tower(dice)
+print(score)
 #any combination of dice
 def chance(dice):
     score = 0
@@ -199,7 +270,7 @@ def lower_count(score_card):
 
     return lower_score
 
-def possible_categories(dice, which_player, score_card):
+def possible_categories(dice, which_player, score_card): # this needs to be changed slightly to work with maxi yatzi
     possibilities = []
 
     # Calculate potential scores for each category
