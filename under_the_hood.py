@@ -1,13 +1,23 @@
 import random
 
-def score_card_generate(player_count):
-    score_card = {
+def score_card_generate(player_count, game_mode_num):
+    if game_mode_num == 5:
+        score_card = {
         'Ones': ['-']*player_count , 'Twos': ['-']*player_count, 'Threes': ['-']*player_count, 'Fours': ['-']*player_count, 'Fives': ['-']*player_count, 'Sixes': ['-']*player_count,
         'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Small Straight': ['-']*player_count,
         'Large Straight': ['-']*player_count, 'Full House': ['-']*player_count, 'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
-    }
+        }
+        return score_card
+    
+    elif game_mode_num == 6:
+        score_card = {
+        'Ones': ['-']*player_count , 'Twos': ['-']*player_count, 'Threes': ['-']*player_count, 'Fours': ['-']*player_count, 'Fives': ['-']*player_count, 'Sixes': ['-']*player_count,
+        'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three Pairs': ['-']*player_count,'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Five of a kind':['-']*player_count, 
+        'Small Straight': ['-']*player_count,'Large Straight': ['-']*player_count, 'Full Straight':['-']*player_count,'Full House': ['-']*player_count,'Villa':['-']*player_count, 'Tower':['-']*player_count ,'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
+        }
+        return score_card
 
-    return score_card
+   
 
 
 #this function works flawlessly
@@ -100,7 +110,7 @@ def two_pairs(dice):
     pairs = []
 
     for num in sort_dice:
-        if dice.count(num) >= 4:
+        if dice.count(num) >= 4: #change this to return 0 if it nope
             score = num *4
             break
         elif dice.count(num) >= 2:
@@ -116,12 +126,12 @@ def three_pairs(dice): #only for maxi-yatzy
     sort_dice = sorted(unique_dice)
     pairs = []
 
-    if len(unique_dice) == 1: # if all the dice are the same
+    if len(unique_dice) == 1: # if all the dice are the same #also needs to return 0 
         score = sum(dice)
         return score
     else:
         for num in sort_dice:
-            if dice.count(num) >= 4: #if there are identical pairs append them to the list two times
+            if dice.count(num) >= 4: #if there are identical pairs append them to the list two times #also needs to return 0
                 pairs.append(num*2)
                 pairs.append(num*2)
 
@@ -188,7 +198,6 @@ def full_straight(dice): #for maxi yatzy only
         score = 21
     return score
 
-
 #combination of 3 of a kind and a pair of two
 def full_house(dice):
     unique_value = set(dice)
@@ -203,16 +212,13 @@ def full_house(dice):
 
     return score
 
-def kitchen(dice):
-    pass
-
 def villa(dice):
     #two there of a kinds
     score = 0
     unique_dice = set(dice)
     triplet= []
 
-    if len(unique_dice) == 1:
+    if len(unique_dice) == 1: #needs to return 0 aswell
         score = sum(dice)
         return score
     else:
@@ -228,14 +234,23 @@ def villa(dice):
 def tower(dice):
     score = 0
     unique_dice = set(dice)
+    pairs = []
 
-    if len(unique_dice) == 1:
-        score = sum()
+    if len(unique_dice) == 1: #also should return 0 if confirmed by rules
+        score = sum(unique_dice)
+    else:
+        for num in unique_dice:
+            if dice.count(num) == 4 :
+                pairs.append(num*4)
+            elif dice.count(num) == 2:
+                pairs.append(num * 2)
 
-#debud code
-dice = [3, 3, 4, 4, 5, 5]
-score = tower(dice)
-print(score)
+    if len(pairs) == 2:
+        score = sum(pairs)
+        return score
+    else:
+        return score
+
 #any combination of dice
 def chance(dice):
     score = 0
@@ -270,27 +285,51 @@ def lower_count(score_card):
 
     return lower_score
 
-def possible_categories(dice, which_player, score_card): # this needs to be changed slightly to work with maxi yatzi
+def possible_categories(dice, which_player, score_card, game_mode_type): # this needs to be changed slightly to work with maxi yatzi
     possibilities = []
 
     # Calculate potential scores for each category
-    scoring_dict = {
-        'Ones': single_digits(dice, 1),
-        'Twos': single_digits(dice, 2),
-        'Threes': single_digits(dice, 3),
-        'Fours': single_digits(dice, 4),
-        'Fives': single_digits(dice, 5),
-        'Sixes': single_digits(dice, 6),
-        'One Pair': one_pair(dice),
-        'Two Pairs': two_pairs(dice),
-        'Three of a Kind': three_of_a_kind(dice),
-        'Four of a Kind': four_of_a_kind(dice),
-        'Small Straight': small_straight(dice),
-        'Large Straight': large_straight(dice),
-        'Full House': full_house(dice),
-        'Chance': chance(dice),
-        'Yatzy': yatzy(dice, 5)  # fix this to work with a 6 (maxi) as well
-    }
+    if game_mode_type == 5:
+        scoring_dict = {
+            'Ones': single_digits(dice, 1),
+            'Twos': single_digits(dice, 2),
+            'Threes': single_digits(dice, 3),
+            'Fours': single_digits(dice, 4),
+            'Fives': single_digits(dice, 5),
+            'Sixes': single_digits(dice, 6),
+            'One Pair': one_pair(dice),
+            'Two Pairs': two_pairs(dice),
+            'Three of a Kind': three_of_a_kind(dice),
+            'Four of a Kind': four_of_a_kind(dice),
+            'Small Straight': small_straight(dice),
+            'Large Straight': large_straight(dice),
+            'Full House': full_house(dice),
+            'Chance': chance(dice),
+            'Yatzy': yatzy(dice, 5)  # fix this to work with a 6 (maxi) as well
+            }
+    elif game_mode_type == 6:
+        scoring_dict={
+            'Ones': single_digits(dice, 1),
+            'Twos': single_digits(dice, 2),
+            'Threes': single_digits(dice, 3),
+            'Fours': single_digits(dice, 4),
+            'Fives': single_digits(dice, 5),
+            'Sixes': single_digits(dice, 6),
+            'One Pair': one_pair(dice),
+            'Two Pairs': two_pairs(dice),
+            'Three Pairs': three_pairs(dice),
+            'Three of a Kind': three_of_a_kind(dice),
+            'Four of a Kind': four_of_a_kind(dice),
+            'Five of a kind': five_of_a_kind(dice),
+            'Small Straight': small_straight(dice),
+            'Large Straight': large_straight(dice),
+            'Full Straight': full_straight(dice),
+            'Full House': full_house(dice),
+            'Villa': villa(dice),
+            'Tower': tower(dice),
+            'Chance': chance(dice),
+            'Yatzy': yatzy(dice, 6)
+        }
 
     # Fill in possibilities with categories that have a valid score > 0
     for name, score in scoring_dict.items():
