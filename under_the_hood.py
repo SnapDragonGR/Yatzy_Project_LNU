@@ -8,7 +8,6 @@ def score_card_generate(player_count, game_mode_num):
         'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Small Straight': ['-']*player_count,
         'Large Straight': ['-']*player_count, 'Full House': ['-']*player_count, 'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
         }
-        print(score_card)
         return score_card
     
     elif game_mode_num == 6:
