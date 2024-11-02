@@ -8,6 +8,7 @@ def score_card_generate(player_count, game_mode_num):
         'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Small Straight': ['-']*player_count,
         'Large Straight': ['-']*player_count, 'Full House': ['-']*player_count, 'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
         }
+        print(score_card)
         return score_card
     
     elif game_mode_num == 6:
@@ -68,6 +69,7 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
             
     return dice_list
 
+
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
         1: ["[       ]", "[   ○   ]", "[       ]"],
@@ -87,9 +89,11 @@ def print_rolls(roll_list, game_mode_num):
         print(f"{a:^10}", end="")
     print()
 
+
 def single_digits(dice, num):
     score = sum(i for i in dice if i == num)
     return score
+
 
 def one_pair(dice):
     score = 0
@@ -101,6 +105,7 @@ def one_pair(dice):
             break
 
     return score
+
 
 def two_pairs(dice):
     score = 0
@@ -118,6 +123,7 @@ def two_pairs(dice):
                 score = sum(pairs)
                 return score
     return score
+
 
 def three_pairs(dice): #only for maxi-yatzy
     score = 0 
@@ -141,6 +147,7 @@ def three_pairs(dice): #only for maxi-yatzy
                     return score
     return score
 
+
 # check if a number appears three (or more) times and update the Three of a Kind value if that's the case
 # noinspection DuplicatedCode
 def three_of_a_kind(dice):
@@ -152,6 +159,7 @@ def three_of_a_kind(dice):
 
     return score
 
+
 # same as above but for 4 appearances
 def four_of_a_kind(dice):
     score = 0
@@ -162,6 +170,7 @@ def four_of_a_kind(dice):
 
     return score
 
+
 def five_of_a_kind(dice): # for maxi yatzy only
     score = 0
     for num in dice:
@@ -169,6 +178,7 @@ def five_of_a_kind(dice): # for maxi yatzy only
             score = num * 5
             break
     return score
+
 
 #def five_of_a_kind(dice):
 def small_straight(dice):
@@ -179,7 +189,8 @@ def small_straight(dice):
         score = 15
 
     return score
-             
+
+
 def large_straight(dice):
     score = 0 
     required_sequence = {2, 3, 4, 5, 6}
@@ -189,6 +200,7 @@ def large_straight(dice):
 
     return score
 
+
 def full_straight(dice): #for maxi yatzy only
     score = 0
     required_sequence = {1, 2, 3, 4, 5, 6}
@@ -196,6 +208,7 @@ def full_straight(dice): #for maxi yatzy only
     if required_sequence.issubset(dice):
         score = 21
     return score
+
 
 #combination of 3 of a kind and a pair of two
 def full_house(dice):
@@ -210,6 +223,7 @@ def full_house(dice):
             score = (first * 2) + (second * 3)
 
     return score
+
 
 def villa(dice):
     #two there of a kinds
@@ -229,6 +243,7 @@ def villa(dice):
                     return score
     
     return score
+
 
 def tower(dice):
     score = 0
@@ -250,6 +265,7 @@ def tower(dice):
     else:
         return score
 
+
 #any combination of dice
 def chance(dice):
     score = 0
@@ -257,6 +273,7 @@ def chance(dice):
         score += num
 
     return score
+
 
 #yeatzy 5 of a kind
 def yatzy(dice, game_mode_number):
@@ -292,6 +309,7 @@ def lower_count(score_card, which_player):
 
     return lower_score
 
+
 # final score sum for each player
 # check if that works for maxi yatzy
 def final_score(score_card, which_player):
@@ -304,12 +322,31 @@ def final_score(score_card, which_player):
         print()
 
 
-# function works well, BUT: 1) no error check if player chooses to cross out the same category
-# 2) on the very last option, when the last player has to pick the last option to cross out
-# the program rolls the dice again, even though it's not needed cuz the user already filled in the last category
-# 3) there was smth else but I forgot, smth with multiplayer as well
-# 4) maybe I will rewrite the crossing out mechanics cuz first of all it might be good to have it as a separate func
-# second of all it is so tiring to always manually write the full name (might need to change the score_card printing then)
+def cross_out(which_player, score_card):
+    available_categories = []
+
+    print("Available categories to cross out:")
+    for category in score_card.keys():
+        if score_card[category][which_player] == '-':
+            available_categories.append(category)
+
+    for index, category in enumerate(available_categories, start=1):
+        print(f"{index}. {category}")
+
+    choice = input("Which category would you like to cross out (index)? ").strip()
+
+    while not choice.isdigit() or int(choice) not in range(1, len(available_categories) + 1):
+        print("Invalid input. Please enter an index for an uncrossed category.")
+        choice = input("Which category would you like to cross out (index)? ").strip()
+
+    category_name = available_categories[int(choice) - 1]
+
+    score_card[category_name][which_player] = 'x'
+
+    print()
+    print(f"Category '{category_name}' has been crossed out.")
+
+
 def possible_categories(dice, which_player, score_card, game_mode_type):
     if all(score != '-' for score in [score_card[key][which_player] for key in score_card]):
         print(f"Player {which_player + 1} has completed all categories and will skip this turn.")
@@ -366,26 +403,10 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
         if score_card[name][which_player] == '-' and score > 0:  # Check score is valid and category isn't used
             possibilities.append((name, score))
 
-    # Early exit if no valid categories
+    # Return false for future crossing out if no possibilities found
     if not possibilities:
-        print("No valid scoring categories available for this roll. You have to cross out a category to continue.")
-        print()
-        choice = input("Which category would you like to cross out (by name)? ").strip()
-        processed_score_card = {key.lower().replace(' ', ''): key for key in score_card}
-
-        processed_choice = choice.lower().replace(' ', '')
-
-        while processed_choice not in processed_score_card:
-            print("Invalid input. Please enter a valid number corresponding to a category.")
-            choice = input("Enter the name of the category you want to choose: ").strip()
-            processed_choice = choice.lower().replace(' ', '')
-
-        category_name = processed_score_card[processed_choice]
-        score_card[category_name][which_player] = 'x'
-
-        print()
-        print(f"Category '{category_name}' has been crossed out.")
-
+        print("No valid scoring categories available for this roll.")
+        cross_out(which_player, score_card)
         return None
 
     # Display possible categories to the user
@@ -400,22 +421,7 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
         choice = input("Choose a category by number, or type 'x' to cross out a category: ")
 
         if choice == 'x':
-            choice = input("Which category would you like to cross out (by name)? ").strip()
-
-            processed_score_card = {key.lower().replace(' ',''): key for key in score_card}
-
-            processed_choice = choice.lower().replace(' ', '')
-
-            while processed_choice not in processed_score_card:
-                print("Invalid input. Please enter a valid number corresponding to a category.")
-                choice = input("Enter the name of the category you want to choose: ").strip()
-                processed_choice = choice.lower().replace(' ', '')
-
-
-            category_name = processed_score_card[processed_choice]
-            score_card[category_name][which_player] = 'x'
-
-            print(f"Category '{category_name}' has been crossed out.")
+            cross_out(which_player, score_card)
             break
 
         elif choice.isdigit() and 1 <= int(choice) <= len(possibilities):
