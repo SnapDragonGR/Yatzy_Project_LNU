@@ -1,6 +1,13 @@
 import random
 
-
+""" current error list:
+1. two pair is still being a little bitch, needs to be changed to be only 2 unique pairs
+2. full house dosent work properly with maxi-yatzi as it requires 2 unique values in the list, however for maxi yatzi there can be 3 unique values and still be true
+3. villa, tower and all other maxi yatzi also needs to be rechecked
+4. I will make test cases to debug and verify all of the logic 
+5. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
+6. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
+"""
 def score_card_generate(player_count, game_mode_num):
     if game_mode_num == 5:
         score_card = {
@@ -130,8 +137,7 @@ def three_pairs(dice): #only for maxi-yatzy
     sort_dice = sorted(unique_dice)
     pairs = []
 
-    if len(unique_dice) == 1: # if all the dice are the same #also needs to return 0 
-        score = sum(dice)
+    if len(unique_dice) == 1:
         return score
     else:
         for num in sort_dice:
@@ -178,8 +184,6 @@ def five_of_a_kind(dice): # for maxi yatzy only
             break
     return score
 
-
-#def five_of_a_kind(dice):
 def small_straight(dice):
     score = 0 
     required_sequence = {1, 2, 3, 4, 5}
@@ -210,11 +214,11 @@ def full_straight(dice): #for maxi yatzy only
 
 
 #combination of 3 of a kind and a pair of two
-def full_house(dice):
+def full_house(dice): 
     unique_value = set(dice)
     score = 0
 
-    if len(unique_value) == 2: # underlying logic works for maxi yazi however this if statement does not
+    if len(unique_value) == 2:
         first, second = unique_value
         if dice.count(first) == 3 and dice.count(second) == 2:
             score = (first * 3) + (second * 2)
@@ -230,8 +234,7 @@ def villa(dice):
     unique_dice = set(dice)
     triplet= []
 
-    if len(unique_dice) == 1: #needs to return 0 aswell
-        score = sum(dice)
+    if len(unique_dice) == 1:
         return score
     else:
         for num in unique_dice:
@@ -249,8 +252,8 @@ def tower(dice):
     unique_dice = set(dice)
     pairs = []
 
-    if len(unique_dice) == 1: #also should return 0 if confirmed by rules
-        score = sum(unique_dice)
+    if len(unique_dice) == 1:
+        return score
     else:
         for num in unique_dice:
             if dice.count(num) == 4 :
