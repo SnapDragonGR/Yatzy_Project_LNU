@@ -54,7 +54,7 @@ def game_logic(dice_num):
                 under_the_hood.show_scoring_sheet(player_count, score_card)
                 print("\nAll categories are filled. Game over!")
 
-                under_the_hood.final_score(score_card, player_count)
+                under_the_hood.final_score(score_card, player_count, dice_num)
 
             elif player_count_choice == 'back':
                 break

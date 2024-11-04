@@ -1,7 +1,6 @@
 import random
 
 """ current error list:
-2. full house dosent work properly with maxi-yatzi as it requires 2 unique values in the list, however for maxi yatzi there can be 3 unique values and still be true
 3. villa, tower and all other maxi yatzi also needs to be rechecked
 4. I will make test cases to debug and verify all of the logic 
 5. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
@@ -152,11 +151,11 @@ def three_pairs(dice): #only for maxi-yatzy
     else:
         for num in sort_dice:
             if dice.count(num) >= 4: #if there are identical pairs append them to the list two times #also needs to return 0
-                pairs.append(num*2)
-                pairs.append(num*2)
+                pairs.append(num * 2)
+                pairs.append(num * 2)
 
             elif dice.count(num) >= 2:#schecking if there are pairs
-                pairs.append(num*2)
+                pairs.append(num * 2)
 
                 if len(pairs) == 3: #if the number of pairs is already 3 return the score
                     score = sum(pairs)
@@ -194,6 +193,7 @@ def five_of_a_kind(dice): # for maxi yatzy only
         if dice.count(num) >= 5: #if there are 5 or more of the same rolls update the score
             score = num * 5
             break
+
     return score
 
 def small_straight(dice):
@@ -226,17 +226,38 @@ def full_straight(dice): #for maxi yatzy only
     return score
 
 
-#combination of 3 of a kind and a pair of two
-def full_house(dice): 
-    unique_value = set(dice)
+# combination of 3 of a kind and a pair of two, check for any case possible manually (i gave up)
+def full_house(dice):
     score = 0
+    temp = sorted(dice)
 
-    if len(unique_value) == 2:
-        first, second = unique_value
-        if dice.count(first) == 3 and dice.count(second) == 2:
-            score = (first * 3) + (second * 2)
-        elif dice.count(second) == 3 and dice.count(first) == 2:
-            score = (first * 2) + (second * 3)
+    # Check for a 5-dice pattern
+    if len(temp) == 5 and len(set(temp)) != 1:
+        if temp[0] == temp[1] and temp[2] == temp[3] == temp[4]:
+            score = temp[0] * 2 + temp[2] * 3
+        elif temp[0] == temp[1] == temp[2] and temp[3] == temp[4] and len(set(temp)) != 1:
+            score = temp[0] * 3 + temp[3] * 2
+
+        return score
+
+    # Check for a 6-dice pattern
+    elif len(temp) == 6 and len(set(temp)) != 1:
+        if temp[0] == temp[1] == temp[2] and temp[3] == temp[4]:
+            score = temp[0] * 3 + temp[3] * 2
+
+        elif temp[1] == temp[2] == temp[3] and temp[4] == temp[5]:
+            score = temp[1] * 3 + temp[4] * 2
+
+        elif temp[1] == temp[2] and temp[3] == temp[4] == temp[5]:
+            score = temp[1] * 2 + temp[3] * 3
+
+        elif temp[0] == temp[1] and temp[3] == temp[4] == temp[5]:
+            score = temp[0] * 2 + temp[3] * 3
+
+        elif temp[0] == temp[1] and temp[2] == temp[3] == temp[4]:
+            score = temp[0] * 2 + temp[2] * 3
+
+        return score
 
     return score
 
@@ -245,10 +266,11 @@ def villa(dice):
     #two there of a kinds
     score = 0
     unique_dice = set(dice)
-    triplet= []
+    triplet = []
 
     if len(unique_dice) == 1:
         return score
+
     else:
         for num in unique_dice:
             if dice.count(num) == 3:
@@ -308,14 +330,18 @@ def yatzy(dice, game_mode_number):
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
 
 
-def upper_count(score_card, which_player):
+def upper_count(score_card, which_player, game_mode_number):
     upper_score = sum(
         int(score_card[key][which_player])
         for key in score_card if key in upper_keys and str(score_card[key][which_player]).isdigit()
     )
+    if game_mode_number == 5:
+        if upper_score >= 63:
+            upper_score += 50
 
-    if upper_score >= 63:
-        upper_score += 50
+    elif game_mode_number == 6:
+        if upper_score >= 75:
+            upper_score += 50
 
     return upper_score
 
@@ -331,11 +357,17 @@ def lower_count(score_card, which_player):
 
 # final score sum for each player
 # check if that works for maxi yatzy
-def final_score(score_card, which_player):
+def final_score(score_card, which_player, game_mode_number):
     for player_index in range(which_player):
-        upper_score = upper_count(score_card, player_index)
-        lower_score = lower_count(score_card, player_index)
-        final_score = upper_score + lower_score
+        if game_mode_number == 5:
+            upper_score = upper_count(score_card, player_index, 5)
+            lower_score = lower_count(score_card, player_index)
+            final_score = upper_score + lower_score
+
+        elif game_mode_number == 6:
+            upper_score = upper_count(score_card, player_index, 6)
+            lower_score = lower_count(score_card, player_index)
+            final_score = upper_score + lower_score
 
         print(f"\nFinal score for Player {player_index + 1}: {final_score}")
 
