@@ -1,10 +1,11 @@
 import random
 
 """ current error list:
-3. villa, tower and all other maxi yatzi also needs to be rechecked
-4. I will make test cases to debug and verify all of the logic 
-5. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
-6. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
+1 villa, tower and all other maxi yatzi also needs to be rechecked (for sure, I think smth is wrong with tower)
+2. I will make test cases to debug and verify all of the logic 
+3. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
+4. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
+5. Formatting - specifically the way two-digit numbers are not centered in the score sheet (tho quite a minor one) 
 """
 
 
