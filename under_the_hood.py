@@ -1,13 +1,14 @@
 import random
 
 """ current error list:
-1. two pair is still being a little bitch, needs to be changed to be only 2 unique pairs
 2. full house dosent work properly with maxi-yatzi as it requires 2 unique values in the list, however for maxi yatzi there can be 3 unique values and still be true
 3. villa, tower and all other maxi yatzi also needs to be rechecked
 4. I will make test cases to debug and verify all of the logic 
 5. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
 6. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
 """
+
+
 def score_card_generate(player_count, game_mode_num):
     if game_mode_num == 5:
         score_card = {
@@ -37,7 +38,7 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
     # re-rolling the dice up to 2 re-rolls
     for _ in range(2):
         while True:
-            choice_reroll = input("Do you want to re-roll (y - yes, n - no): ").lower().strip()#right i forgot strip the spaces good catch
+            choice_reroll = input("\nDo you want to re-roll (y - yes, n - no): ").lower().strip()#right i forgot strip the spaces good catch
             if choice_reroll in ('y', 'yes', 'n', 'no'):
                 break
             print(f"'{choice_reroll}' is not a valid choice. Please enter 'y' or 'n'.")
@@ -90,7 +91,10 @@ def print_rolls(roll_list, game_mode_num):
         for i in range(1, game_mode_num + 1):
             print(dice_faces[roll_list[i - 1]][row], end=" ")
         print()
-    print('-------------------------------------------------')
+
+    dash_length = (9 * game_mode_num) + (game_mode_num - 1)
+    print("-" * dash_length)
+
     for a in range(1, game_mode_num + 1):
         print(f"{a:^10}", end="")
     print()
@@ -98,6 +102,7 @@ def print_rolls(roll_list, game_mode_num):
 
 def single_digits(dice, num):
     score = sum(i for i in dice if i == num)
+
     return score
 
 
@@ -113,21 +118,25 @@ def one_pair(dice):
     return score
 
 
+# fixed
 def two_pairs(dice):
     score = 0
-    unique_dice = set(dice)
-    sort_dice = sorted(unique_dice, reverse=True)
+    sort_dice = sorted(dice, reverse=True)
     pairs = []
 
-    for num in sort_dice:
-        if dice.count(num) >= 4: #change this to return 0 if it nope
-            score = num *4
-            break
-        elif dice.count(num) >= 2:
-            pairs.append(num*2)
+    for num in set(sort_dice):
+        count = dice.count(num)
+
+        if count >= 4:
+            return 0
+
+        elif count >= 2:
+            pairs.append(num * 2)
+
             if len(pairs) == 2:
                 score = sum(pairs)
                 return score
+
     return score
 
 
@@ -139,6 +148,7 @@ def three_pairs(dice): #only for maxi-yatzy
 
     if len(unique_dice) == 1:
         return score
+
     else:
         for num in sort_dice:
             if dice.count(num) >= 4: #if there are identical pairs append them to the list two times #also needs to return 0
@@ -147,9 +157,11 @@ def three_pairs(dice): #only for maxi-yatzy
 
             elif dice.count(num) >= 2:#schecking if there are pairs
                 pairs.append(num*2)
+
                 if len(pairs) == 3: #if the number of pairs is already 3 return the score
                     score = sum(pairs)
                     return score
+
     return score
 
 
@@ -210,6 +222,7 @@ def full_straight(dice): #for maxi yatzy only
 
     if required_sequence.issubset(dice):
         score = 21
+
     return score
 
 
@@ -254,21 +267,24 @@ def tower(dice):
 
     if len(unique_dice) == 1:
         return score
+
     else:
         for num in unique_dice:
             if dice.count(num) == 4 :
                 pairs.append(num*4)
+
             elif dice.count(num) == 2:
                 pairs.append(num * 2)
 
     if len(pairs) == 2:
         score = sum(pairs)
         return score
+
     else:
         return score
 
 
-#any combination of dice
+# any combination of dice
 def chance(dice):
     score = 0
     for num in dice:
@@ -277,7 +293,7 @@ def chance(dice):
     return score
 
 
-#yeatzy 5 of a kind
+#yatzy 5 of a kind
 def yatzy(dice, game_mode_number):
     score = 0
     if dice.count(dice[0]) == game_mode_number :
@@ -285,6 +301,7 @@ def yatzy(dice, game_mode_number):
             score = 50
         elif game_mode_number == 6:
             score = 100
+
     return score
 
 # sum of scores from the upper section categories + bonus check
@@ -320,14 +337,12 @@ def final_score(score_card, which_player):
         lower_score = lower_count(score_card, player_index)
         final_score = upper_score + lower_score
 
-        print(f"Final score for Player {player_index + 1}: {final_score}")
-        print()
+        print(f"\nFinal score for Player {player_index + 1}: {final_score}")
 
 
 def cross_out(which_player, score_card):
     available_categories = []
 
-    print("Available categories to cross out:")
     for category in score_card.keys():
         if score_card[category][which_player] == '-':
             available_categories.append(category)
@@ -335,7 +350,7 @@ def cross_out(which_player, score_card):
     for index, category in enumerate(available_categories, start=1):
         print(f"{index}. {category}")
 
-    choice = input("Which category would you like to cross out (index)? ").strip()
+    choice = input("\nWhich one would you like to cross out (index)? ").strip()
 
     while not choice.isdigit() or int(choice) not in range(1, len(available_categories) + 1):
         print("Invalid input. Please enter an index for an uncrossed category.")
@@ -345,8 +360,7 @@ def cross_out(which_player, score_card):
 
     score_card[category_name][which_player] = 'x'
 
-    print()
-    print(f"Category '{category_name}' has been crossed out.")
+    print(f"\nCategory '{category_name}' has been crossed out.")
 
 
 def possible_categories(dice, which_player, score_card, game_mode_type):
@@ -407,20 +421,18 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
 
     # Return false for future crossing out if no possibilities found
     if not possibilities:
-        print("No valid scoring categories available for this roll.")
+        print("\nNo valid scoring categories available for this roll. List of categories available to cross out:")
         cross_out(which_player, score_card)
         return None
 
     # Display possible categories to the user
-    print()
-    print("Possible categories for this roll:")
+    print("\nPossible categories for this roll:")
     for index, (name, _) in enumerate(possibilities, 1):
         print(f"{index}. {name}")
 
     # Error handling with user input
-    print()
     while True:
-        choice = input("Choose a category by number, or type 'x' to cross out a category: ")
+        choice = input("\nChoose a category by number, or type 'x' to cross out a category: ")
 
         if choice == 'x':
             cross_out(which_player, score_card)
@@ -439,11 +451,14 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
 
 
 def show_scoring_sheet(player_count, score_card):
-    print()
-    print('Current score sheet:')
-    header = f"|{'Categories':<16s}|"+"".join(f"P{p+1:^5}|" for p in range(player_count))
+    print('\nCurrent score sheet:')
+
+    header = f"|{'Categories':<16s}|" + "".join(f"{'P' + str(p + 1):^5}" + "|" for p in range(player_count))
     print(header)
-    print("-"* (len(header)-1)) 
-    for key, value in score_card.items(): #this is most certainly also gonna break #suprisingly did not break
-        print(f'|{key:<16}|' +"".join(f"{player_score:^5}|" for player_score in value ))
-    print("-"* (len(header)-1))
+
+    print("-" * (len(header)))
+
+    for key, value in score_card.items():
+        print(f'|{key:<16}|' + "".join(f"{player_score:^5}" + "|" for player_score in value))
+
+    print("-" * len(header))
