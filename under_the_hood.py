@@ -1,11 +1,7 @@
 import random
 
 """ current error list:
-1 villa, tower and all other maxi yatzi also needs to be rechecked (for sure, I think smth is wrong with tower)
-2. I will make test cases to debug and verify all of the logic 
-3. I also changed main function to not repeat code, however this might fuck with some of the code so more extensive testing is needed 
-4. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
-5. Formatting - specifically the way two-digit numbers are not centered in the score sheet (tho quite a minor one) 
+1. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
 """
 
 
@@ -141,26 +137,22 @@ def two_pairs(dice):
 
 
 def three_pairs(dice): #only for maxi-yatzy
-    score = 0 
-    unique_dice = set(dice)
-    sort_dice = sorted(unique_dice)
+    score = 0
+    sort_dice = sorted(dice, reverse=True)
     pairs = []
 
-    if len(unique_dice) == 1:
-        return score
+    for num in set(sort_dice):
+        count = dice.count(num)
 
-    else:
-        for num in sort_dice:
-            if dice.count(num) >= 4: #if there are identical pairs append them to the list two times #also needs to return 0
-                pairs.append(num * 2)
-                pairs.append(num * 2)
+        if count >= 4:
+            return 0
 
-            elif dice.count(num) >= 2:#schecking if there are pairs
-                pairs.append(num * 2)
+        elif count >= 2:
+            pairs.append(num * 2)
 
-                if len(pairs) == 3: #if the number of pairs is already 3 return the score
-                    score = sum(pairs)
-                    return score
+            if len(pairs) == 3:
+                score = sum(pairs)
+                return score
 
     return score
 
@@ -263,8 +255,9 @@ def full_house(dice):
     return score
 
 
+# works, tested
 def villa(dice):
-    #two there of a kinds
+    # two there of a kinds
     score = 0
     unique_dice = set(dice)
     triplet = []
@@ -286,25 +279,24 @@ def villa(dice):
 def tower(dice):
     score = 0
     unique_dice = set(dice)
-    pairs = []
+    four_numbers = []
+    pair = []
 
     if len(unique_dice) == 1:
         return score
 
     else:
         for num in unique_dice:
-            if dice.count(num) == 4 :
-                pairs.append(num*4)
+            if dice.count(num) == 4:
+                four_numbers.append(num * 4)
 
-            elif dice.count(num) == 2:
-                pairs.append(num * 2)
+            if dice.count(num) == 2:
+                pair.append(num * 2)
 
-    if len(pairs) == 2:
-        score = sum(pairs)
-        return score
+    if len(four_numbers) == 1 and len(pair) == 1:
+        score = sum(four_numbers) + sum(pair)
 
-    else:
-        return score
+    return score
 
 
 # any combination of dice
@@ -391,7 +383,7 @@ def cross_out(which_player, score_card):
 
     category_name = available_categories[int(choice) - 1]
 
-    score_card[category_name][which_player] = 'x'
+    score_card[category_name][which_player] = 'xx'
 
     print(f"\nCategory '{category_name}' has been crossed out.")
 
@@ -486,12 +478,16 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
 def show_scoring_sheet(player_count, score_card):
     print('\nCurrent score sheet:')
 
-    header = f"|{'Categories':<16s}|" + "".join(f"{'P' + str(p + 1):^5}" + "|" for p in range(player_count))
+    header = f"|{'Categories':<16s}|" + "".join(f"{'P' + str(p + 1):^6}" + "|" for p in range(player_count))
     print(header)
 
     print("-" * (len(header)))
 
     for key, value in score_card.items():
-        print(f'|{key:<16}|' + "".join(f"{player_score:^5}" + "|" for player_score in value))
+        score_line = "".join(
+            f"{'  --  ' if player_score == '-' else f'{int(player_score):02}' if str(player_score).isdigit() else str(player_score).center(6)}".center(6) + "|"
+            for player_score in value
+        )
+        print(f'|{key:<16}|' + score_line)
 
     print("-" * len(header))
