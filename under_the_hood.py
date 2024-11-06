@@ -253,7 +253,7 @@ def full_straight(dice): #for maxi yatzy only
     return score
 
 
-# combination of 3 of a kind and a pair of two, check for any case possible manually (i gave up)
+# combination of 3 of a kind and a pair of two, check for any case possible manually (i gave up) lmao
 def full_house(dice):
     score = 0
     temp = sorted(dice)
