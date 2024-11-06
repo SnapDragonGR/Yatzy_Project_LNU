@@ -4,7 +4,7 @@ import random
 1. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
 """
 
-# The function generates a score card dictionary for Yatzy / Maxi Yatzy depending on the number of players and game mode (5 or 6 dice).
+# The function generates a scorecard dictionary for Yatzy / Maxi Yatzy depending on the number of players and game mode (5 or 6 dice).
 # Each category has a list with placeholders '-' for each player, indicating that no score has been recorded yet.
 # Different categories are generated depending on the selected game mode.
 def score_card_generate(player_count, game_mode_num):
@@ -27,9 +27,9 @@ def score_card_generate(player_count, game_mode_num):
         }
         return score_card
 
-
-# The function rolls a specified number of dice (based on game mode) and allows 2 re-rolls. The user can choose to re-roll all dice or select specific
-# dice to re-roll by providing their positions. Validations ensure inputs are within the allowed range and format, preventing the program from
+# Main game mechanics function.
+# Rolls a specified number of dice (based on game mode) and allows 2 re-rolls. The user can choose to re-roll all dice or select specific
+# dice to re-roll by providing their positions. Validations ensure inputs are within the allowed range and format, which prevents the program from
 # crashing and improving usability.
 def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the number of dice to roll
     dice_list = []    # List used to store the values of the rolled dice
@@ -53,6 +53,7 @@ def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the 
         if choice_reroll in ("y", "yes"):
             while True:
                 choice_all = input("To re-roll all dice enter 'a', or specify dice positions separated by commas (e.g. 1,3,5): ").lower().strip()
+                print()
 
                 # Re-roll all dice if 'a' is chosen
                 if choice_all in ("a", "all"):
@@ -417,35 +418,49 @@ def final_score(score_card, which_player, game_mode_number):
         print(f"\nFinal score for Player {player_index + 1}: {final_score}")
 
 
+# This function allows players to cross out an unused category in the scorecard
+# Identifies available (uncrossed) categories, present them to the player, takes their cross out choice
+# and updates the scorecard to mark the selected category as crossed out
 def cross_out(which_player, score_card):
     available_categories = []
 
+    # Loop through each category and check if it's available to cross out (has '-' in it)
+    # then add it to the available categories
     for category in score_card.keys():
         if score_card[category][which_player] == '-':
             available_categories.append(category)
 
+    # Display the available categories with index numbers
     for index, category in enumerate(available_categories, start=1):
         print(f"{index}. {category}")
 
+    # Get the user's choice of a category to cross out by entering its index
     choice = input("\nWhich one would you like to cross out (index)? ").strip()
 
+    # Error handling - check if input is a digit, corresponds to a valid index
     while not choice.isdigit() or int(choice) not in range(1, len(available_categories) + 1):
         print("Invalid input. Please enter an index for an uncrossed category.")
         choice = input("Which category would you like to cross out (index)? ").strip()
 
+    # Convert the valid input to the category name selected by the player
     category_name = available_categories[int(choice) - 1]
 
+    # Update the scorecard by marking the selected category with 'xx' to indicate it is crossed out
     score_card[category_name][which_player] = 'xx'
 
+    # Print confirmation message for the player
     print(f"\nCategory '{category_name}' has been crossed out.")
 
 
+# Another main game mechanics function
+# Gives the user all possible scoring options for the current roll
+# Does it by calling each scoring function (defined above) and checking if the output is 0 or not
+# If it is not 0 then it is a possible category and the user will be able to choose it
+# If no such categories found (all of them either give out 0 or already have a score)
+# the user has to cross out a category to keep playing (just like in the actual board game)
+# Also lets the user cross out a category whenever they want to
 def possible_categories(dice, which_player, score_card, game_mode_type):
-    if all(score != '-' for score in [score_card[key][which_player] for key in score_card]):
-        print(f"Player {which_player + 1} has completed all categories and will skip this turn.")
-        return None
-
-    possibilities = []
+    possibilities = [] # Initializing the possibility list
 
     # Calculate potential scores for each category
     if game_mode_type == 5:
@@ -515,6 +530,7 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
             cross_out(which_player, score_card)
             break
 
+        # If the input is a valid number within range, mark the chosen category with the calculated score
         elif choice.isdigit() and 1 <= int(choice) <= len(possibilities):
             choice = int(choice) - 1
             selected_category, selected_score = possibilities[choice]
@@ -527,19 +543,34 @@ def possible_categories(dice, which_player, score_card, game_mode_type):
             print("Invalid input. Please enter a valid number corresponding to a category or 'x' to cross out a category.")
 
 
+# Function displays the current scoring sheet for each player with good formatting
+# Generates a header with player labels and prints each category's score, adjusting formatting for different score types
 def show_scoring_sheet(player_count, score_card):
     print('\nCurrent score sheet:')
 
+    # Create the header row with "Categories" column and a column for each player (P1, P2, ...)
     header = f"|{'Categories':<16s}|" + "".join(f"{'P' + str(p + 1):^6}" + "|" for p in range(player_count))
     print(header)
 
+    # Separator line that matches the header length
     print("-" * (len(header)))
 
+    # Loop through each category in the scorecard to print each row with category name and scores for each player
     for key, value in score_card.items():
+
+        # Build the score line for each player in category
+        # Format each player's score:
+        # " -- " if the score is still pending ('-')
+        # Display a two-digit number if the score is numeric
+        # Center the scores
         score_line = "".join(
-            f"{'  --  ' if player_score == '-' else f'{int(player_score):02}' if str(player_score).isdigit() else str(player_score).center(6)}".center(6) + "|"
+            f"{'  --  ' if player_score == '-' else f'{int(player_score):02}' 
+            if str(player_score).isdigit() else str(player_score).center(6)}".center(6) + "|"
             for player_score in value
         )
+
+        # Print the category name followed by the formatted scores for each player
         print(f'|{key:<16}|' + score_line)
 
+    # Print a final separator line to close the table
     print("-" * len(header))
