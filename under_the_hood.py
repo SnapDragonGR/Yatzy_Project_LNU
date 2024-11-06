@@ -40,7 +40,7 @@ def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the 
     print_rolls(dice_list, game_mode_num)
 
     # Re-rolling the dice up to 2 re-rolls
-    for _ in range(2):
+    for a in range(2):
         while True:
             # Ask if the player wants to re-roll
             choice_reroll = input("\nDo you want to re-roll (y - yes, n - no): ").lower().strip()
