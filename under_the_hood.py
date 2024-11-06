@@ -249,25 +249,27 @@ def large_straight(dice):
     return score
 
 
-#
 
+# Calculates the score for "Full Straight" (Maxi-Yatzy only).
+# Full straight = 1, 2, 3, 4, 5, 6
 def full_straight(dice): #for maxi yatzy only
     score = 0
-    required_sequence = {1, 2, 3, 4, 5, 6}
+    required_sequence = {1, 2, 3, 4, 5, 6} # Define the required sequence
 
     if required_sequence.issubset(dice):
-        score = 21
+        score = 21 # Sum of the numbers in the sequence is 21
 
     return score
 
 
-# combination of 3 of a kind and a pair of two, check for any case possible manually (i gave up) lmao
+# Calculates the score for "Full House"
+# which is a combination of "Three of a Kind" and a "Pair".
 def full_house(dice):
     score = 0
-    temp = sorted(dice)
+    temp = sorted(dice) # Makes pattern matching easier
 
-    # Check for a 5-dice pattern
-    if len(temp) == 5 and len(set(temp)) != 1:
+    # Check for a 5-dice pattern (manually for any possible combination)
+    if len(temp) == 5 and len(set(temp)) != 1: # The set should have more than one unique value
         if temp[0] == temp[1] and temp[2] == temp[3] == temp[4]:
             score = temp[0] * 2 + temp[2] * 3
         elif temp[0] == temp[1] == temp[2] and temp[3] == temp[4] and len(set(temp)) != 1:
@@ -275,7 +277,7 @@ def full_house(dice):
 
         return score
 
-    # Check for a 6-dice pattern
+    # Check for a 6-dice pattern (manually for any possible combination)
     elif len(temp) == 6 and len(set(temp)) != 1:
         if temp[0] == temp[1] == temp[2] and temp[3] == temp[4]:
             score = temp[0] * 3 + temp[3] * 2
@@ -297,27 +299,29 @@ def full_house(dice):
     return score
 
 
-# works, tested
+# Checks if the dice has two "Three of a Kind" (Maxi-Yatzy)
 def villa(dice):
-    # two there of a kinds
     score = 0
     unique_dice = set(dice)
-    triplet = []
+    triplet = [] # Holds values for any triplets found
 
-    if len(unique_dice) == 1:
+    if len(unique_dice) == 1: # If all dice are the same return 0
         return score
 
     else:
         for num in unique_dice:
-            if dice.count(num) == 3:
-                triplet.append(num * 3)
-                if len(triplet) == 2:
-                    score = sum(triplet)
+            if dice.count(num) == 3: # Check if a number appears exactly 3 times
+                triplet.append(num * 3) # Add its "three of a kind" score to the triplet
+                if len(triplet) == 2: # If two "three of a kind" patterns are found, calculate the score
+                    score = sum(triplet) # Sum of the two triplets
                     return score
     
     return score
 
 
+# Checks for "Tower" (Maxi-Yatzy).
+# A "four of a kind" and a "pair" in the roll.
+# If both are found, returns sum of their scores.
 def tower(dice):
     score = 0
     unique_dice = set(dice)
@@ -329,28 +333,30 @@ def tower(dice):
 
     else:
         for num in unique_dice:
-            if dice.count(num) == 4:
+            if dice.count(num) == 4: # If a num appears 4 times it's a "four of a kind"
                 four_numbers.append(num * 4)
 
-            if dice.count(num) == 2:
+            if dice.count(num) == 2: # If appears exactly twice, it's a "pair"
                 pair.append(num * 2)
 
-    if len(four_numbers) == 1 and len(pair) == 1:
-        score = sum(four_numbers) + sum(pair)
+    if len(four_numbers) == 1 and len(pair) == 1: # If exactly one "four of a kind" and one "pair" are found
+        score = sum(four_numbers) + sum(pair) # Add the scores
 
     return score
 
 
-# any combination of dice
+# Calculates "Chance" which is a combination of random numbers (kind of like last resort before crossing out).
 def chance(dice):
     score = 0
     for num in dice:
-        score += num
+        score += num # Simply the sum of all numbers in the roll
 
     return score
 
 
-#yatzy 5 of a kind
+# Checks if all dice are the same, meaning it's a "YATZY".
+# In standard Yatzy this gives 50 points.
+# In Maxi-Yatzy - 100 points.
 def yatzy(dice, game_mode_number):
     score = 0
     if dice.count(dice[0]) == game_mode_number :
@@ -361,15 +367,19 @@ def yatzy(dice, game_mode_number):
 
     return score
 
-# sum of scores from the upper section categories + bonus check
+# Upper keys for upper count
 upper_keys = ['Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes']
 
-
+# Sum of scores from the upper section categories + bonus check
+# Minimal threshold depends on if it's yatzy or maxi yatzy
+# 63 for standard and 75 for maxi
 def upper_count(score_card, which_player, game_mode_number):
+    # Calculate the sum of scores in the upper section for the specified player
     upper_score = sum(
         int(score_card[key][which_player])
         for key in score_card if key in upper_keys and str(score_card[key][which_player]).isdigit()
     )
+
     if game_mode_number == 5:
         if upper_score >= 63:
             upper_score += 50
@@ -381,6 +391,7 @@ def upper_count(score_card, which_player, game_mode_number):
     return upper_score
 
 
+# Function calculates the score from the "Lower Section" (simply not "Upper Section")
 def lower_count(score_card, which_player):
     lower_score = sum(
         int(score_card[key][which_player])
@@ -390,8 +401,7 @@ def lower_count(score_card, which_player):
     return lower_score
 
 
-# final score sum for each player
-# check if that works for maxi yatzy
+# Final score sum for each player depending on if it's maxi yatzy or normal yatzy
 def final_score(score_card, which_player, game_mode_number):
     for player_index in range(which_player):
         if game_mode_number == 5:
