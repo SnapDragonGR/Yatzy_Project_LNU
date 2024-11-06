@@ -4,39 +4,51 @@ import random
 1. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
 """
 
+# The function generates a score card dictionary for Yatzy / Maxi Yatzy depending on the number of players and game mode (5 or 6 dice).
+# Each category has a list with placeholders '-' for each player, indicating that no score has been recorded yet.
+# Different categories are generated depending on the selected game mode.
 
 def score_card_generate(player_count, game_mode_num):
     if game_mode_num == 5:
         score_card = {
-        'Ones': ['-']*player_count , 'Twos': ['-']*player_count, 'Threes': ['-']*player_count, 'Fours': ['-']*player_count, 'Fives': ['-']*player_count, 'Sixes': ['-']*player_count,
-        'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Small Straight': ['-']*player_count,
-        'Large Straight': ['-']*player_count, 'Full House': ['-']*player_count, 'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
+        'Ones': ['-'] * player_count , 'Twos': ['-'] * player_count, 'Threes': ['-'] * player_count, 'Fours': ['-'] * player_count, 'Fives': ['-'] * player_count,
+        'Sixes': ['-'] * player_count, 'One Pair': ['-'] * player_count, 'Two Pairs': ['-'] * player_count, 'Three of a Kind': ['-'] * player_count,
+        'Four of a Kind': ['-'] * player_count, 'Small Straight': ['-'] * player_count,
+        'Large Straight': ['-'] * player_count, 'Full House': ['-'] * player_count, 'Chance': ['-'] * player_count, 'Yatzy': ['-'] * player_count
         }
         return score_card
     
     elif game_mode_num == 6:
         score_card = {
-        'Ones': ['-']*player_count , 'Twos': ['-']*player_count, 'Threes': ['-']*player_count, 'Fours': ['-']*player_count, 'Fives': ['-']*player_count, 'Sixes': ['-']*player_count,
-        'One Pair': ['-']*player_count, 'Two Pairs': ['-']*player_count, 'Three Pairs': ['-']*player_count,'Three of a Kind': ['-']*player_count, 'Four of a Kind': ['-']*player_count, 'Five of a kind':['-']*player_count, 
-        'Small Straight': ['-']*player_count,'Large Straight': ['-']*player_count, 'Full Straight':['-']*player_count,'Full House': ['-']*player_count,'Villa':['-']*player_count, 'Tower':['-']*player_count ,'Chance': ['-']*player_count, 'Yatzy': ['-']*player_count
+        'Ones': ['-'] * player_count , 'Twos': ['-'] * player_count, 'Threes': ['-'] * player_count, 'Fours': ['-'] * player_count, 'Fives': ['-'] * player_count,
+        'Sixes': ['-'] * player_count, 'One Pair': ['-'] * player_count, 'Two Pairs': ['-'] * player_count, 'Three Pairs': ['-'] * player_count,
+        'Three of a Kind': ['-'] * player_count, 'Four of a Kind': ['-'] * player_count, 'Five of a kind':['-'] * player_count, 'Small Straight': ['-'] * player_count,
+        'Large Straight': ['-'] * player_count, 'Full Straight':['-'] * player_count,'Full House': ['-'] * player_count,'Villa':['-'] * player_count,
+        'Tower':['-'] * player_count , 'Chance': ['-'] * player_count, 'Yatzy': ['-'] * player_count
         }
         return score_card
 
 
-#this function works flawlessly
-def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on the game mode chosen, ie changing the number of times the dice are rolled
-    dice_list = []    # list used to store the values of the rolled dice
+# The function rolls a specified number of dice (based on game mode) and allows 2 re-rolls. The user can choose to re-roll all dice or select specific
+# dice to re-roll by providing their positions. Validations ensure inputs are within the allowed range and format, preventing the program from
+# crashing and improving usability.
 
+def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the number of dice to roll
+    dice_list = []    # List used to store the values of the rolled dice
+
+    # Initial roll for the specified number of dice
     for i in range(0, game_mode_num): # i is the index of the list
         dice_list.append(random.randint(1, 6))
     print_rolls(dice_list, game_mode_num)
 
-    # re-rolling the dice up to 2 re-rolls
+    # Re-rolling the dice up to 2 re-rolls
     for _ in range(2):
         while True:
-            choice_reroll = input("\nDo you want to re-roll (y - yes, n - no): ").lower().strip()#right i forgot strip the spaces good catch
+            # Ask if the player wants to re-roll
+            choice_reroll = input("\nDo you want to re-roll (y - yes, n - no): ").lower().strip()
             if choice_reroll in ('y', 'yes', 'n', 'no'):
                 break
+
             print(f"'{choice_reroll}' is not a valid choice. Please enter 'y' or 'n'.")
 
 
@@ -44,7 +56,7 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
             while True:
                 choice_all = input("To re-roll all dice enter 'a', or specify dice positions separated by commas (e.g. 1,3,5): ").lower().strip()
 
-                # Re-roll all dice
+                # Re-roll all dice if 'a' is chosen
                 if choice_all in ("a", "all"):
                     for j in range(game_mode_num):
                         dice_list[j] = random.randint(1, 6)
@@ -73,6 +85,10 @@ def rolling_dice(game_mode_num): #game_mode_num is either 5 or 6 depending on th
     return dice_list
 
 
+# This function prints the rolled dice in an aesthetically pleasing visual format, showing dice faces.
+# Each die face is represented by a pattern of tods (○) for numbers 1 to 6.
+# The function formats the output for each row and adds numbered labels for dice positions.
+
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
         1: ["[       ]", "[   ○   ]", "[       ]"],
@@ -83,57 +99,75 @@ def print_rolls(roll_list, game_mode_num):
         6: ["[ ○   ○ ]", "[ ○   ○ ]", "[ ○   ○ ]"]
     }
 
+    # Print each row of dice faces for the current roll
     for row in range(3):
         for i in range(1, game_mode_num + 1):
             print(dice_faces[roll_list[i - 1]][row], end=" ")
         print()
 
+    # Print a separator line under the dice faces
     dash_length = (9 * game_mode_num) + (game_mode_num - 1)
     print("-" * dash_length)
 
+    # Print dice position numbers centered below each die
     for a in range(1, game_mode_num + 1):
         print(f"{a:^10}", end="")
     print()
 
 
+# Function calculates the score for the "Single Digits" category.
+# Sums the values in the roll that match "num" and returns the total score.
+
 def single_digits(dice, num):
     score = sum(i for i in dice if i == num)
-
     return score
 
 
+# Calculate the score for the "One Pair" category.
+# The function finds the highest number that appears at least twice in the roll.
+# If such a number exists, it returns the doubled number. Otherwise, returns 0.
+
 def one_pair(dice):
     score = 0
-    unique_dice = set(dice)
-    sort_dice = sorted(unique_dice, reverse=True)
+    unique_dice = set(dice) # Get unique roll values to simplify checking for pairs
+    sort_dice = sorted(unique_dice, reverse=True) # Sort descending to find largest pairs first
+
     for num in sort_dice:
-        if dice.count(num) >= 2:
+        if dice.count(num) >= 2:  # Check if there is a pair
             score = num * 2
             break
 
     return score
 
 
-# fixed
+# Calculate the score for the "Two Pairs" category.
+# The function searches for the two largest pairs in the roll
+# If two pairs are found, it returns their combined score (the pairs should contain different numbers).
+# Otherwise, it returns 0.
+
 def two_pairs(dice):
     score = 0
-    sort_dice = sorted(dice, reverse=True)
-    pairs = []
+    sort_dice = sorted(dice, reverse=True) # Sort descending to find highest pairs first
+    pairs = [] # List to hold pairs' scores
 
-    for num in set(sort_dice):
+    for num in set(sort_dice): # Check unique values in the roll
         count = dice.count(num)
 
+        # Check if they are four of the same number, which does not work for "Two Pairs"
         if count >= 4:
             return 0
 
         elif count >= 2:
             pairs.append(num * 2)
 
+            # If two pairs are found, calculate the score
             if len(pairs) == 2:
                 score = sum(pairs)
                 return score
 
     return score
+
+
 
 
 def three_pairs(dice): #only for maxi-yatzy
