@@ -7,7 +7,6 @@ import random
 # The function generates a score card dictionary for Yatzy / Maxi Yatzy depending on the number of players and game mode (5 or 6 dice).
 # Each category has a list with placeholders '-' for each player, indicating that no score has been recorded yet.
 # Different categories are generated depending on the selected game mode.
-
 def score_card_generate(player_count, game_mode_num):
     if game_mode_num == 5:
         score_card = {
@@ -32,7 +31,6 @@ def score_card_generate(player_count, game_mode_num):
 # The function rolls a specified number of dice (based on game mode) and allows 2 re-rolls. The user can choose to re-roll all dice or select specific
 # dice to re-roll by providing their positions. Validations ensure inputs are within the allowed range and format, preventing the program from
 # crashing and improving usability.
-
 def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the number of dice to roll
     dice_list = []    # List used to store the values of the rolled dice
 
@@ -88,7 +86,6 @@ def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the 
 # This function prints the rolled dice in an aesthetically pleasing visual format, showing dice faces.
 # Each die face is represented by a pattern of tods (○) for numbers 1 to 6.
 # The function formats the output for each row and adds numbered labels for dice positions.
-
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
         1: ["[       ]", "[   ○   ]", "[       ]"],
@@ -117,7 +114,6 @@ def print_rolls(roll_list, game_mode_num):
 
 # Function calculates the score for the "Single Digits" category.
 # Sums the values in the roll that match "num" and returns the total score.
-
 def single_digits(dice, num):
     score = sum(i for i in dice if i == num)
     return score
@@ -126,7 +122,6 @@ def single_digits(dice, num):
 # Calculate the score for the "One Pair" category.
 # The function finds the highest number that appears at least twice in the roll.
 # If such a number exists, it returns the doubled number. Otherwise, returns 0.
-
 def one_pair(dice):
     score = 0
     unique_dice = set(dice) # Get unique roll values to simplify checking for pairs
@@ -144,7 +139,6 @@ def one_pair(dice):
 # The function searches for the two largest pairs in the roll
 # If two pairs are found, it returns their combined score (the pairs should contain different numbers).
 # Otherwise, it returns 0.
-
 def two_pairs(dice):
     score = 0
     sort_dice = sorted(dice, reverse=True) # Sort descending to find highest pairs first
@@ -163,17 +157,18 @@ def two_pairs(dice):
             # If two pairs are found, calculate the score
             if len(pairs) == 2:
                 score = sum(pairs)
-                return score
+                break
 
     return score
 
 
-
-
-def three_pairs(dice): #only for maxi-yatzy
+# Calculates the score for Three Pairs (Maxi-Yatzy only).
+# It finds up to 3 distinct pairs and adds their values together.
+# Similar logic to the function defined above.
+def three_pairs(dice):
     score = 0
-    sort_dice = sorted(dice, reverse=True)
-    pairs = []
+    sort_dice = sorted(dice, reverse=True) # Sort dice in descending order to find largest pairs
+    pairs = [] # List to store the scores of the pairs found
 
     for num in set(sort_dice):
         count = dice.count(num)
@@ -181,29 +176,34 @@ def three_pairs(dice): #only for maxi-yatzy
         if count >= 4:
             return 0
 
+        # If there are at least 2 of the same die - a valid pair
         elif count >= 2:
-            pairs.append(num * 2)
+            pairs.append(num * 2) # Add the score of the pair to the list (value * 2)
 
+            # If 3 pairs are found, return total score
             if len(pairs) == 3:
-                score = sum(pairs)
-                return score
+                score = sum(pairs) # Sum up the scores of the three pairs
+                break
 
-    return score
+    return score # returns 0 if no three pairs were found
 
 
-# check if a number appears three (or more) times and update the Three of a Kind value if that's the case
-# noinspection DuplicatedCode
+# Calculates the score for "Three of a Kind".
+# If at least three of the same die are found, their value is multiplied by 3.
 def three_of_a_kind(dice):
     score = 0
+
+    # Iterate over each die in the dice list
     for num in dice:
+        # If the current die appears 3 or more times, calculate the score
         if dice.count(num) >= 3:
-            score = num * 3
+            score = num * 3 # Value of the die * 3
             break
 
     return score
 
 
-# same as above but for 4 appearances
+# Same as above but for 4 appearances ("Four of a kind")
 def four_of_a_kind(dice):
     score = 0
     for num in dice:
@@ -214,25 +214,31 @@ def four_of_a_kind(dice):
     return score
 
 
-def five_of_a_kind(dice): # for maxi yatzy only
+# Same as above but for five of the same die (Maxi-Yatzy only)
+def five_of_a_kind(dice):
     score = 0
     for num in dice:
-        if dice.count(num) >= 5: #if there are 5 or more of the same rolls update the score
+        if dice.count(num) >= 5: # if there are 5 or more of the same rolls update the score
             score = num * 5
             break
 
     return score
 
+
+# Checks if the rolled dice contain the required numbers for "Small Straight".
+# Small straight = 1, 2, 3, 4, 5
 def small_straight(dice):
     score = 0 
-    required_sequence = {1, 2, 3, 4, 5}
+    required_sequence = {1, 2, 3, 4, 5} # Define the required sequence for Small Straight
 
+    # Check if the required sequence is a subset of the rolled dice
     if required_sequence.issubset(dice):
-        score = 15
+        score = 15 # Sum of the set is 15
 
     return score
 
 
+# Same logic as above but for "Large Straight" (2, 3, 4, 5, 6)
 def large_straight(dice):
     score = 0 
     required_sequence = {2, 3, 4, 5, 6}
@@ -242,6 +248,8 @@ def large_straight(dice):
 
     return score
 
+
+#
 
 def full_straight(dice): #for maxi yatzy only
     score = 0
