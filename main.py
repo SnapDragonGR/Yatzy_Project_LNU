@@ -1,5 +1,7 @@
 from under_the_hood import score_card_generate, rolling_dice, show_scoring_sheet, possible_categories, final_score
 
+# Rule set used for maxi-yatzy can be found at https://www.blankettbanken.se/wp-content/uploads/2018/03/maxiyatzy.pdf
+
 # Main function to start the game with a game mode selection and error handling
 # Provides options for standard Yatzy, Maxi Yatzy, and exiting the game
 def main():
