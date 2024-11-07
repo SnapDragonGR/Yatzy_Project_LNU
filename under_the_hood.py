@@ -1,9 +1,5 @@
 import random
 
-""" current error list:
-1. I also might write some automated test to all the logic functions and just write the output to a log file so i can recheck
-"""
-
 # The function generates a scorecard dictionary for Yatzy / Maxi Yatzy depending on the number of players and game mode (5 or 6 dice).
 # Each category has a list with placeholders '-' for each player, indicating that no score has been recorded yet.
 # Different categories are generated depending on the selected game mode.
