@@ -80,9 +80,9 @@ def rolling_dice(game_mode_num): # game_mode_num is either 5 or 6, defining the 
     return dice_list
 
 
-# This function prints the rolled dice in an aesthetically pleasing visual format, showing dice faces.
-# Each die face is represented by a pattern of tods (○) for numbers 1 to 6.
-# The function formats the output for each row and adds numbered labels for dice positions.
+# This function prints the rolled dice in an aesthetically pleasing visual format, showing dice faces
+# Each die face is represented by a pattern of tods (○) for numbers 1 to 6
+# The function formats the output for each row and adds numbered labels for dice positions
 def print_rolls(roll_list, game_mode_num):
     dice_faces = {
         1: ["[       ]", "[   ○   ]", "[       ]"],
