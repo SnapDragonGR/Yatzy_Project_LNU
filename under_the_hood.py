@@ -263,7 +263,7 @@ def full_straight(dice): #for maxi yatzy only
 # which is a combination of "Three of a Kind" and a "Pair".
 def full_house(dice):
     score = 0
-    temp = sorted(dice) # Makes pattern matching easier
+    temp = sorted(dice, reverse=True) # Makes pattern matching easier
 
     # Check for a 5-dice pattern (manually for any possible combination)
     if len(temp) == 5 and len(set(temp)) != 1: # The set should have more than one unique value
