@@ -49,7 +49,7 @@ def game_logic(dice_num):
                 # Track each player's game status (whether they've filled all categories)
                 finished_players = [False] * player_count  # Track finished players
 
-                # Main game loop that runs until all players have completed their score sheets
+                # Main game loop that runs until all players have completed their scorecards
                 while any(not finished for finished in finished_players):
                     for player in range(player_count):
                         # Skip the player's turn if they've completed all categories

@@ -18,8 +18,8 @@ def score_card_generate(player_count, game_mode_num):
         'Ones': ['-'] * player_count , 'Twos': ['-'] * player_count, 'Threes': ['-'] * player_count, 'Fours': ['-'] * player_count, 'Fives': ['-'] * player_count,
         'Sixes': ['-'] * player_count, 'One Pair': ['-'] * player_count, 'Two Pairs': ['-'] * player_count, 'Three Pairs': ['-'] * player_count,
         'Three of a Kind': ['-'] * player_count, 'Four of a Kind': ['-'] * player_count, 'Five of a kind':['-'] * player_count, 'Small Straight': ['-'] * player_count,
-        'Large Straight': ['-'] * player_count, 'Full Straight':['-'] * player_count,'Full House': ['-'] * player_count,'Villa':['-'] * player_count,
-        'Tower':['-'] * player_count , 'Chance': ['-'] * player_count, 'Yatzy': ['-'] * player_count
+        'Large Straight': ['-'] * player_count, 'Full Straight': ['-'] * player_count,'Full House': ['-'] * player_count,'Villa': ['-'] * player_count,
+        'Tower': ['-'] * player_count , 'Chance': ['-'] * player_count, 'Yatzy': ['-'] * player_count
         }
         return score_card
 
@@ -560,8 +560,8 @@ def show_scoring_sheet(player_count, score_card):
         # Display a two-digit number if the score is numeric
         # Center the scores
         score_line = "".join(
-            f"{'  --  ' if player_score == '-' else f'{int(player_score):02}' 
-            if str(player_score).isdigit() else str(player_score).center(6)}".center(6) + "|"
+            f"{'  --  ' if player_score == '-' else f'{int(player_score):02}' \
+            if str(player_score).isdigit() else str(player_score).center(6)}".center(6) + "|" \
             for player_score in value
         )
 
